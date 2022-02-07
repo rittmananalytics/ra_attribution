@@ -1,0 +1,23 @@
+version: 2
+
+sources:
+
+  - name: custom
+    database: analytics
+    schema: analytics
+
+    tables:
+      - name: order_lines
+        identifier: ORDER_LINES
+      - name: orders
+        identifier: f_orders
+      - name: users
+        identifier: d_users
+
+  - name: custom_ltv
+    database: analytics
+    schema: analytics_ltv
+
+    tables:
+      - name: user_ltv
+        identifier: f_customer_ltv_ndays

@@ -1,0 +1,99 @@
+version: 2
+
+sources:
+  - name: snapchat_ads
+    schema: "{{ var('snapchat_ads_schema', var('snapchat_ads_api_source')) }}"
+    database: "{{ var('snapchat_ads_database', target.database) }}"
+    loader: Fivetran
+    loaded_at_field: _fivetran_synced
+
+    tables:
+      - name: ad_account_history
+        description: Each record in this table represents a historic version of an ad account in Snapchat.
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: id
+            description: The ID of the account in Snapchat.
+          - name: name
+            description: The name of the account in Snapchat.
+
+      - name: ad_history
+        description: Each record in this table represents a historic version of an ad in Snapchat.
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: id
+            description: The ID of the ad in Snapchat.
+          - name: ad_squad_id
+            description: The ID of the related ad squad in Snapchat.
+          - name: creative_id
+            description: The ID of the related creative in Snapchat.
+          - name: name
+            description: The name of the ad in Snapchat.
+
+      - name: ad_hourly_report
+        description: Each record represents an hourly performance summary for an ad in Snapchat.
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: ad_id
+            description: The ID of the ad that the report relates to in Snapchat.
+          - name: date
+            description: The hour that the report relates to.
+          - name: impressions
+            description: The number of impressions for an ad in the hour of the record.
+          - name: spend
+            description: The amount of spend for an ad in the hour of the record.
+          - name: swipes
+            description: The number of swipes for an ad in the hour of the record.
+
+      - name: ad_squad_history
+        description: Each record in this table represents a historic version of an ad squad in Snapchat.
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: id
+            description: The ID fo the ad squad in Snapchat.
+          - name: campaign_id
+            description: The ID of the related campaign in Snapchat.
+          - name: name
+            description: The name of the ad squad in Snapchat.
+
+      - name: campaign_history
+        description: Each record in this table represents a historic version of a campaign in Snapchat.
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: id
+            description: The name of the campaign in Snapchat.
+          - name: ad_account_id
+            description: The ID of the related ad account in Snapchat.
+          - name: name
+            description: The name of the campaign in Snapchat.
+
+      - name: creative_history
+        description: Each record in this table represents a historic version of a creative in Snapchat.
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: id
+            description: The ID of the creative in Snapchat.
+          - name: ad_account_id
+            description: The ID of the related ad account in Snapchat.
+          - name: name
+            description: The name of the creative in Snapchat.
+          - name: web_view_url
+            description: The URL of the creative if the creative is of type 'web view'.
+
+      - name: creative_url_tag_history
+        description: Each record in this table represents a URL paramter key-value pair for a creative in Snapchat.
+        columns:
+          - name: _fivetran_synced
+            description: "{{ doc('_fivetran_synced') }}"
+          - name: creative_id
+            description: The ID of the related creative in Snapchat.
+          - name: key
+            description: The URL parameter key, i.e. UTM_SOURCE.
+          - name: value
+            description: The URL parameter value, i.e. Snapchat.

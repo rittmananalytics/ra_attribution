@@ -1,0 +1,103 @@
+name: 'custom_data_warehouse'
+version: '0.0.3'
+
+require-dbt-version: ">=0.17.0"
+config-version: 2
+
+profile: 'ra_attribution'
+
+source-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+data-paths: ["data"]
+macro-paths: ["macros"]
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+    - "target"
+    - "dbt_modules"
+
+on-run-start:
+    - "create table if not exists {{ generate_prefixed_target_name() }}_logs.audit_dbt_results (object string, status string, row_count numeric, execution_time numeric, load_ts timestamp)"
+
+on-run-end:
+    - "insert into {{ generate_prefixed_target_name() }}_logs.audit_dbt_results (object, status, row_count, execution_time, load_ts) values {{ results_values(results) }}"
+
+models:
+  ra_attribution:
+# source adapter general settings
+      sources:
+          materialized: view
+          schema: staging
+
+# integration layer settings
+      integration:
+          materialized: view
+          schema: staging
+
+# warehouse layer settings
+      warehouse:
+          materialized: table
+# util module settings
+      utils:
+          materialized: table
+
+# seeds (reference files, loaded into tables) module settings
+seeds:
+  custom_data_warehouse:
+    schema: seed
+
+vars:
+
+  attribution_warehouse_ad_campaign_sources: ['facebook_ads','google_ads']
+  attribution_warehouse_ad_group_sources: ['facebook_ads','google_ads']
+  attribution_warehouse_ad_sources: ['facebook_ads','google_ads']
+
+  attribution_warehouse_click_id_sources: ['google_ads']
+  attribution_warehouse_currency_rate_sources: ['custom_currency_rates']
+
+  attribution_warehouse_event_sources: ['custom_events_order','custom_events_registration','snowplow_events_all']
+  attribution_warehouse_ltv_sources: ['custom_ltv_customer']
+
+  # Attribution-specific settings
+
+  attribution_create_account_event_type: user_registration  # event name for registration events
+  attribution_conversion_event_type: confirmed_order # event name for order events
+  attribution_global_currency: 'USD' # currency code for global amounts
+  attribution_lookback_days_window : 30  # how far back sessions can go to be eligable for attribution
+  attribution_time_decay_days_window : 7 # over how many days do we decay the value of conversions for time-decay model
+  attribution_include_conversion_session: true # whether the session containing the conversion event is within scope for attribution
+  attribution_match_offline_conversions_to_sessions: true # whether orders and registrations are matched to Snowplow sessions or not
+  attribution_max_session_hours: 24 # maximum length of a session in hours to be considered for matching purposes
+
+  # Data source settings
+
+  stg_snowplow_events_snowplow_schema: analytics
+  stg_snowplow_events_snowplow_database: analytics
+  snowplow_max_users_per_session: 10
+
+  google_ads_schema: fivetran_adwords
+  google_ads_database: raw
+  google_ads_api_source: google_ads
+  google_ads__url_passthrough_metrics: []
+  google_ads__criteria_passthrough_metrics: []
+  google_ads__ad_stats_passthrough_metrics: []
+  google_ads__click_performance: adwords.ft_adwords_click_performance_report
+
+  ad_reporting__facebook_ads_schema: staging
+  ad_reporting__facebook_ads_database: analytics
+  ad_reporting__google_ads_schema: staging
+  ad_reporting__google_ads_database: analytics
+  ad_reporting__snapchat_ads_schema: staging
+  ad_reporting__snapchat_ads_database: analytics
+
+  facebook_ads_schema: fivetran_facebook_ads
+  facebook_ads_database: raw
+  facebook_ads_api_source: facebook_ads
+
+  snapchat_ads_schema: fivetran_snapchat_ads
+  snapchat_ads_database: raw
+  snapchat_ads_api_source: snapchat_ads
+
+  dbt_utils_dispatch_list: [spark_utils, fivetran_utils]
+  fivetran_utils_dispatch_list: [spark_utils]

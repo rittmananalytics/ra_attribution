@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+
+  - name: custom
+    database: analytics
+    schema: analytics
+
+    tables:
+      - name: currency_rates
+        identifier: d_currency_rates
