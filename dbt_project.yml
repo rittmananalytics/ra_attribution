@@ -46,6 +46,36 @@ models:
 seeds:
   custom_data_warehouse:
     schema: seed
+    +column_types:
+      event_time: timestamp
+      created_at: timestamp
+      page_title: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      page_url_path: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      page_url: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      marketing_term: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      marketing_content: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      marketing_medium: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      marketing_campaign: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      marketing_source: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      marketing_click_id: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      page_url_query: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      referer_url_host: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      useragent: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      order_line_id: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      order_id: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      user_id: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      user_created_date: timestamp
+      order_date: timestamp
+      local_currency: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      global_currency: "{{ 'string' if target.type == 'bigquery' else 'varchar' }}"
+      revenue_local_currency: "{{ 'float64' if target.type == 'bigquery' else 'number(38,2)' }}"
+      revenue_global_currency: "{{ 'float64' if target.type == 'bigquery' else 'number(38,2)' }}"
+
+
+
+
+
+
 
 vars:
 
@@ -69,9 +99,11 @@ vars:
   attribution_include_conversion_session: true # whether the session containing the conversion event is within scope for attribution
   attribution_match_offline_conversions_to_sessions: true # whether orders and registrations are matched to Snowplow sessions or not
   attribution_max_session_hours: 24 # maximum length of a session in hours to be considered for matching purposes
+  attribution_demo_mode: true
 
   # Data source settings
 
+  stg_custom_events_schema: analytics
   stg_snowplow_events_snowplow_schema: analytics
   stg_snowplow_events_snowplow_database: analytics
   snowplow_max_users_per_session: 10

@@ -2,10 +2,10 @@ version: 2
 
 sources:
 
-  - name: custom
+  - name: custom_ltv
     database: analytics
     schema: schema: "{{  generate_prefixed_target_name()~"_SEED" if var('attribution_demo_mode') else var('stg_custom_events_schema') }}"
 
     tables:
-      - name: currency_rates
-        identifier: currency_rates
+      - name: user_ltv
+        identifier: f_customer_ltv_ndays

@@ -4,7 +4,7 @@ sources:
 
   - name: custom
     database: analytics
-    schema: analytics
+    schema: schema: "{{  generate_prefixed_target_name()~"_SEED" if var('attribution_demo_mode') else var('stg_custom_events_schema') }}"
 
     tables:
       - name: order_lines
@@ -13,11 +13,3 @@ sources:
         identifier: f_orders
       - name: users
         identifier: d_users
-
-  - name: custom_ltv
-    database: analytics
-    schema: analytics_ltv
-
-    tables:
-      - name: user_ltv
-        identifier: f_customer_ltv_ndays

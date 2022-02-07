@@ -85,7 +85,7 @@ with
         else 'direct'
       end as channel,
       cast(user_ipaddress as {{ dbt_utils.type_string() }}) as ip,
-      cast(d_inferreuser_id as {{ dbt_utils.type_string() }}) as user_id,
+      cast(user_id as {{ dbt_utils.type_string() }}) as user_id,
       case
         when lower(useragent) like '%android%'
           then 'Android'

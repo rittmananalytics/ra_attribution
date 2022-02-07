@@ -3,8 +3,7 @@ version: 2
 sources:
   - name: snowplow
     database: analytics_archive
-    schema: "{{ var('stg_snowplow_events_snowplow_schema') }}"
-
+    schema: "{{  generate_prefixed_target_name()~"_SEED" if var('attribution_demo_mode') else var('stg_snowplow_events_snowplow_schema') }}"
     freshness:
       warn_after: {count: 1, period: day}
 
