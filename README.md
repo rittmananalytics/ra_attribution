@@ -1,2 +1,1 @@
-# rittman-analytics
-Repo for Rittman Analytics
+# Multi-Cycle, Multi-Touch Revenue and Cost Attribution
