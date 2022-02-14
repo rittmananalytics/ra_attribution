@@ -58,9 +58,11 @@ Credit is also due to Fivetran for their community-released Google Ads, Facebook
 | --- | --- |
 | **Model Name** | **Description** |
 | First Click | Attributes 100% of each first order, subsequent order and account opening to the first marketing or non-marketing touchpoint over a 30-day (default) look-back window |
+| First Non-Direct Click | Attributes 100% of each first order, subsequent order and account opening to the first marketing touchpoint over a 30-day (default) look-back window, or the first direct touchpoint if no paid touchpoints are in the conversion cycle |
+| First Paid Click | Attributes 100% of each first order, subsequent order and account opening to the first paid marketing touchpoint over a 30-day (default) look-back window, or the first direct touchpoint if no paid touchpoints are in the conversion cycle |
 | Last Click | Attributes 100% of each first order, subsequent order and account opening to the last marketing or non-marketing touchpoint over a 30-day (default) look-back window |
-| Last Non-Direct Click | Attributes 100% of each first order, subsequent order and account opening to the last marketing touchpoint over a 30-day (default) look-back window |
-| Last Paid Click | Attributes 100% of each first order, subsequent order and account opening to the last paid marketing touchpoint over a 30-day (default) look-back window |
+| Last Non-Direct Click | Attributes 100% of each first order, subsequent order and account opening to the last marketing touchpoint over a 30-day (default) look-back window, or the last direct touchpoint if no paid touchpoints are in the conversion cycle |
+| Last Paid Click | Attributes 100% of each first order, subsequent order and account opening to the last paid marketing touchpoint over a 30-day (default) look-back window, or the last direct touchpoint if no paid touchpoints are in the conversion cycle |
 | Even Click | Attributes evenly a share of each first order, subsequent order and account opening to each touchpoint  over a 30-day (default) look-back window |
 | Time-Decay | Attributes a percentage of the credit to all the channels on the conversion path for a time-decay period: the amount of credit for each channel is less (decaying) the further back in time the channel was interacted (0.5, 0.25, 0.125 etc) shared across all touchpoints for the day, over a 30-day (default) look-back window and 7-day (default) time-decay look-back window |
 |     |     |
