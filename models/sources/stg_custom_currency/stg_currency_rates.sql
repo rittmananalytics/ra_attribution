@@ -7,14 +7,19 @@ with
     select
       *
     from
-      {{ source('custom', 'currency_rates') }}
+    {% if var("attribution_demo_mode")  %}
+      {{ ref("currency_rates") }}
+    {% else %}
+      {{ source('custom_currency', 'currency_rates') }}
+    {% endif %}
+
   )
   select
-    currency_rate_id,
-    currency_rate_date,
-    base_currency_code,
-    quote_currency_code,
-    currency_rate,
+    currency_rate_id as currency_rate_id,
+    currency_rate_date as currency_rate_date,
+    base_currency_code as base_currency_code,
+    quote_currency_code as quote_currency_code,
+    currency_rate as currency_rate
 
   from currency_rates
 

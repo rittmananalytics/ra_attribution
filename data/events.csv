@@ -1,4 +1,4 @@
-﻿event_id,domain_session_id,user_id,event,event_time,page_title,page_url_path,page_url,marketing_term,marketing_content,marketing_medium,marketing_campaign,marketing_source,marketing_click_id,page_url_query,referer_url_host,user_ipaddress,useragent
+﻿EVENT_ID,DOMAIN_SESSION_ID,USER_ID,EVENT,EVENT_TIME,PAGE_TITLE,PAGE_URL_PATH,PAGE_URL,MARKETING_TERM,MARKETING_CONTENT,MARKETING_MEDIUM,MARKETING_CAMPAIGN,MARKETING_SOURCE,MARKETING_CLICK_ID,PAGE_URL_QUERY,REFERER_URL_HOST,USER_IPADDRESS,USERAGENT
 3428cf5e-560a-4ba8-ac05-a0dcf3699010,f1d7b1d5-ae7c-464c-8e0e-b8807d4fd18a,1259696,se,2021-12-03 07:58:52.383,,,,,,,,,,,,192.168.0.1,
 e1ab4720-a9ea-442e-bdf5-1bc9dd46fa49,fd9e2529-1a5d-41c5-873a-810616e65322,1259696,pp,2021-09-03 16:36:12.383,,,,,,,,,,,retailer.com,192.168.0.1,
 f92dad79-0268-4445-8dd8-5d7583c9d1a4,fd9e2529-1a5d-41c5-873a-810616e65322,1259696,pp,2021-09-03 16:37:40.159,,,,,,,,,,,retailer.com,192.168.0.1,

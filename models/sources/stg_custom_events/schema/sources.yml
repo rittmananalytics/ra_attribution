@@ -2,14 +2,14 @@ version: 2
 
 sources:
 
-  - name: custom
-    database: analytics
-    schema: schema: "{{  generate_prefixed_target_name()~"_SEED" if var('attribution_demo_mode') else var('stg_custom_events_schema') }}"
+  - name: custom_events
+    database: "{{ var('stg_custom_events_database', target.database) }}"
+    schema: "{{ var('stg_custom_events_schema', target.schema) }}"
 
     tables:
       - name: order_lines
-        identifier: ORDER_LINES
+        identifier: order_lines
       - name: orders
-        identifier: f_orders
+        identifier: orders
       - name: users
-        identifier: d_users
+        identifier: users

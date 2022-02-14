@@ -1,0 +1,6 @@
+
+target/
+dbt_modules/
+logs/
+venv/
+dbt_packages/

@@ -7,13 +7,21 @@ with
     select
       *
     from
-      {{ source('custom', 'order_lines') }}
+    {% if var("attribution_demo_mode")  %}
+      {{ ref("orders") }}
+    {% else %}
+      {{ source('custom_events', 'order_lines') }}
+    {% endif %}
   ),
   orders as (
     select
       *
     from
-      {{ source('custom', 'orders') }}
+    {% if var("attribution_demo_mode")  %}
+      {{ ref("orders") }}
+    {% else %}
+      {{ source('custom_events', 'orders') }}
+    {% endif %}
 
   ),
   events as (
@@ -24,6 +32,12 @@ with
 
   ),
   agg_attribution_order_lines as (
+    {% if var("attribution_demo_mode")  %}
+    select
+      *
+    from
+      {{ ref("orders") }}
+    {% else %}
     select
         order_id,
         local_currency,
@@ -32,6 +46,7 @@ with
     from
       order_lines
     group by order_id, local_currency
+    {% endif %}
   ),
   attribution_orders as (
       select
@@ -44,11 +59,12 @@ with
     select
       cast(fo.order_id as {{ dbt_utils.type_string() }}) as event_id,
       '{{ var('attribution_conversion_event_type') }}'  as event_type,
-      fo.created_time as event_ts,
-      cast(event_details as {{ dbt_utils.type_string() }}) as event_details,
+      fo.order_date as event_ts,
+      cast(null as {{ dbt_utils.type_string() }}) as event_details,
       cast(null as {{ dbt_utils.type_string() }}) as page_title,
       cast(null as {{ dbt_utils.type_string() }}) as page_url_path,
       cast(null as {{ dbt_utils.type_string() }}) as referrer_host,
+      cast(null as {{ dbt_utils.type_string() }}) as search,
       cast(null as {{ dbt_utils.type_string() }}) as page_url,
       cast(null as {{ dbt_utils.type_string() }}) as page_url_host,
       cast(null as {{ dbt_utils.type_string() }}) as gclid,
@@ -59,9 +75,9 @@ with
       cast(null as {{ dbt_utils.type_string() }}) as utm_source,
       'direct' as channel,
     	cast(null as {{ dbt_utils.type_string() }}) as ip ,
-    	cast(user_id as {{ dbt_utils.type_string() }}) as user_id,
+    	cast(fo.user_id as {{ dbt_utils.type_string() }}) as user_id,
     	cast(null as {{ dbt_utils.type_string() }}) as device ,
-    	'order_lines' as site,
+    	'custom_ltv' as site,
   	  cast(null as {{ dbt_utils.type_string() }}) as device_category,
       agg.local_currency as local_currency,
       agg.revenue_global_currency as revenue_global_currency,
@@ -78,11 +94,11 @@ with
         session_id,
         session_type,
         MIN(event_ts) as session_start_ts,
-        timestampadd('MINUTE',30,max(event_ts)) as session_end_ts_plus_30_mins
+        {{ dbt_utils.dateadd('MINUTE','30','max(event_ts)') }} as session_end_ts_plus_30_mins
       from
         events
       group by
-        1,2,3,4
+        1,2,3
   ),
   sessions_to_next_session as (
     select
@@ -92,7 +108,7 @@ with
       session_start_ts,
       case
         when lead(session_start_ts,1) over (partition by user_id order by session_start_ts) < session_end_ts_plus_30_mins
-        then timestampadd('MICROSECOND',-1,lead(session_start_ts,1) over (partition by user_id order by session_start_ts))
+        then {{ dbt_utils.dateadd('SECOND','-1','lead(session_start_ts,1) over (partition by user_id order by session_start_ts)') }}
         else session_end_ts_plus_30_mins
       end as session_end_ts_plus_30_mins
     from
@@ -145,7 +161,7 @@ with
     and
       e.event_ts between s.session_start_ts and s.session_end_ts_plus_30_mins
     and
-      datediff('HOUR',session_start_ts,session_end_ts_plus_30_mins) <= {{ var("attribution_max_session_hours") }}
+      {{dbt_utils.datediff("session_start_ts","session_end_ts_plus_30_mins","'HOUR'") }} <= {{ var("attribution_max_session_hours") }}
 
     {% else %}
 

@@ -1,12 +1,12 @@
 version: 2
 
 sources:
-  - name: facebook_ads
-    schema: "{{ var('facebook_ads_schema', var('facebook_ads_api_source')) }}"
-    database: "{{ var('facebook_ads_database', target.database) }}"
+  - name: stg_facebook_ads
+    schema: "{{ var('stg_facebook_ads_schema', var('stg_facebook_ads_api_source')) }}"
+    database: "{{ var('stg_facebook_ads_database', target.database) }}"
     loader: Fivetran
     loaded_at_field: _fivetran_synced
-    
+
     tables:
       - name: account_history
         description: Each record in this table reflects a version of a Facebook ad account.

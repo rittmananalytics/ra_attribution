@@ -43,7 +43,6 @@ select
   device_category,
   session_id,
   session_type,
-  user_type,
   site,
   case when event_type = '{{ var('attribution_conversion_event_type') }}'
     then cast(event_id as varchar) end as order_id,

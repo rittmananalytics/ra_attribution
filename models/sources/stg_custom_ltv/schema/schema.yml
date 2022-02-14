@@ -3,9 +3,9 @@ version: 2
 sources:
 
   - name: custom_ltv
-    database: analytics
-    schema: schema: "{{  generate_prefixed_target_name()~"_SEED" if var('attribution_demo_mode') else var('stg_custom_events_schema') }}"
+    database: "{{ var('stg_custom_ltv_database', target.database) }}"
+    schema: "{{ var('stg_custom_ltv_schema', target.schema) }}"
 
     tables:
       - name: user_ltv
-        identifier: f_customer_ltv_ndays
+        identifier: customer_ltv_ndays

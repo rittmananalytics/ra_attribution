@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: profile
+    columns:
+      - name: column_name
+        tests:
+          - not_null
+          - unique
+
+      - name: data_type
+        tests:
+          - not_null
+
+      - name: row_count
+        tests:
+          - not_null
+
+      - name: not_null_proportion
+        tests:
+          - not_null
+
+      - name: distinct_proportion
+        tests:
+          - not_null
+
+      - name: distinct_count
+        tests:
+          - not_null
+
+      - name: is_unique
+        tests:
+          - not_null
+          - accepted_values:
+              quote: false
+              values: ["TRUE", "FALSE"]
+
+      - name: avg
+        tests:
+          - not_null:
+              where: &column_is_numeric column_name not like 'string%'
+
+      - name: min
+        tests:
+          - not_null:
+              where: *column_is_numeric
+
+      - name: max
+        tests:
+          - not_null:
+              where: *column_is_numeric
+
+      - name: std_dev_population
+        tests:
+          - not_null:
+              where: *column_is_numeric
+
+      - name: std_dev_sample
+        tests:
+          - not_null:
+              where: *column_is_numeric
+
+      - name: profiled_at
+        tests:
+          - not_null

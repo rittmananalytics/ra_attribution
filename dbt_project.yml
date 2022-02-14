@@ -1,4 +1,4 @@
-name: 'custom_data_warehouse'
+name: 'ra_attribution'
 version: '0.0.3'
 
 require-dbt-version: ">=0.17.0"
@@ -6,11 +6,16 @@ config-version: 2
 
 profile: 'ra_attribution'
 
-source-paths: ["models"]
+model-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
-data-paths: ["data"]
+seed-paths: ["data"]
 macro-paths: ["macros"]
+
+quoting:
+  database: false
+  schema: false
+  identifier: false
 
 target-path: "target"  # directory which will store compiled SQL files
 clean-targets:         # directories to be removed by `dbt clean`
@@ -18,10 +23,11 @@ clean-targets:         # directories to be removed by `dbt clean`
     - "dbt_modules"
 
 on-run-start:
-    - "create table if not exists {{ generate_prefixed_target_name() }}_logs.audit_dbt_results (object string, status string, row_count numeric, execution_time numeric, load_ts timestamp)"
+    - "{% do create_schema(api.Relation.create(database=target.database, schema=target.schema + '_logs')) %}"
+    - "create table if not exists {{ target.schema }}_logs.audit_dbt_results (object string, status string, execution_time numeric, load_ts timestamp)"
 
 on-run-end:
-    - "insert into {{ generate_prefixed_target_name() }}_logs.audit_dbt_results (object, status, row_count, execution_time, load_ts) values {{ results_values(results) }}"
+    - "insert into {{ target.schema }}_logs.audit_dbt_results (object, status, execution_time, load_ts) values {{ results_values(results) }}"
 
 models:
   ra_attribution:
@@ -44,7 +50,8 @@ models:
 
 # seeds (reference files, loaded into tables) module settings
 seeds:
-  custom_data_warehouse:
+  ra_attribution:
+    +quote_columns: false
     schema: seed
     +column_types:
       event_time: timestamp
@@ -79,6 +86,10 @@ seeds:
 
 vars:
 
+  # Attribution-specific settings
+
+  # configure which sources from facebook_ads, google_ads and snapchat_ads are enabled (included in list) or disabled (excluded)
+
   attribution_warehouse_ad_campaign_sources: ['facebook_ads','google_ads']
   attribution_warehouse_ad_group_sources: ['facebook_ads','google_ads']
   attribution_warehouse_ad_sources: ['facebook_ads','google_ads']
@@ -89,7 +100,7 @@ vars:
   attribution_warehouse_event_sources: ['custom_events_order','custom_events_registration','snowplow_events_all']
   attribution_warehouse_ltv_sources: ['custom_ltv_customer']
 
-  # Attribution-specific settings
+  # various configuration variables used throughout the package
 
   attribution_create_account_event_type: user_registration  # event name for registration events
   attribution_conversion_event_type: confirmed_order # event name for order events
@@ -99,37 +110,80 @@ vars:
   attribution_include_conversion_session: true # whether the session containing the conversion event is within scope for attribution
   attribution_match_offline_conversions_to_sessions: true # whether orders and registrations are matched to Snowplow sessions or not
   attribution_max_session_hours: 24 # maximum length of a session in hours to be considered for matching purposes
-  attribution_demo_mode: true
+  attribution_demo_mode: true # set to 'true' to source events, orders and other custom app data from seed files, 'false' to source from database
 
-  # Data source settings
+  attribution_models: ['first_click_attrib','first_non_direct_click_attrib','first_paid_click_attrib','last_click_attrib',
+                      'last_non_direct_click_attrib','last_paid_click_attrib','even_click_attrib','time_decay_attrib'] # list of model names to be appended to measures
 
-  stg_custom_events_schema: analytics
-  stg_snowplow_events_snowplow_schema: analytics
-  stg_snowplow_events_snowplow_database: analytics
+  attribution_input_measures: ['total_revenue_local_currency','total_revenue_global_currency','ltv_30d_local_currency','ltv_30d_global_currency',
+                              'ltv_60d_local_currency','ltv_60d_global_currency','ltv_90d_local_currency','ltv_90d_global_currency',
+                              'ltv_180d_local_currency','ltv_180d_global_currency','ltv_365d_local_currency','ltv_365d_global_currency'] # list of attribution input measures
+
+  attribution_output_conversion_measures: {
+                                          "count_registration_conversions" : "user_registration",
+                                          "count_first_order_conversions" : "first_order",
+                                          "count_repeat_order_conversions" : "repeat_order"
+                                          } # list of attribution output conversion measures
+
+  attribution_output_revenue_measures: {
+                                        "first_order_total_revenue_local_currency" : "first_order_total_revenue_local_currency",
+                                        "first_order_total_revenue_global_currency" : "first_order_total_revenue_global_currency",
+                                        "first_order_ltv_30d_local_currency" : "first_order_ltv_30d_local_currency",
+                                        "first_order_ltv_30d_global_currency" : "first_order_ltv_30d_global_currency",
+                                        "first_order_ltv_60d_local_currency" : "first_order_ltv_60d_local_currency",
+                                        "first_order_ltv_60d_global_currency" : "first_order_ltv_60d_global_currency",
+                                        "first_order_ltv_90d_local_currency" : "first_order_ltv_90d_local_currency",
+                                        "first_order_ltv_90d_local_currency" : "first_order_ltv_90d_global_currency",
+                                        "first_order_ltv_180d_local_currency" : "first_order_ltv_180d_local_currency",
+                                        "first_order_ltv_180d_global_currency" : "first_order_ltv_180d_global_currency",
+                                        "first_order_ltv_365d_local_currency" : "first_order_ltv_365d_local_currency",
+                                        "first_order_ltv_365d_global_currency" : "first_order_ltv_365d_global_currency",
+                                        "repeat_order_total_revenue_local_currency" : "repeat_order_total_revenue_global_currency"
+                                        } # list of attribution output revenue measures
+
+
+  # Data source settings -
+  # custom app database sources for orders, events, customer ltv, user registrations and fx rates
+
+  stg_custom_events_schema: analytics_seed
+  stg_custom_events_database: RA_DATA_WAREHOUSE_DEV
+  stg_custom_ltv_schema: analytics_seed
+  stg_custom_ltv_database: RA_DATA_WAREHOUSE_DEV
+  stg_custom_currency_schema: analytics_seed
+  stg_custom_currency_database: RA_DATA_WAREHOUSE_DEV
+
+  # Data source settings -
+  # Snowplow event source
+
+  stg_snowplow_events_snowplow_schema: SNOWPLOW
+  stg_snowplow_events_snowplow_database: RA_DATA_WAREHOUSE_DEV
   snowplow_max_users_per_session: 10
 
-  google_ads_schema: fivetran_adwords
-  google_ads_database: raw
-  google_ads_api_source: google_ads
-  google_ads__url_passthrough_metrics: []
-  google_ads__criteria_passthrough_metrics: []
-  google_ads__ad_stats_passthrough_metrics: []
-  google_ads__click_performance: adwords.ft_adwords_click_performance_report
+  # Data source settings -
+  # Fivetran Ad Reporting package sources
 
-  ad_reporting__facebook_ads_schema: staging
-  ad_reporting__facebook_ads_database: analytics
-  ad_reporting__google_ads_schema: staging
-  ad_reporting__google_ads_database: analytics
-  ad_reporting__snapchat_ads_schema: staging
-  ad_reporting__snapchat_ads_database: analytics
+  stg_google_ads_schema: FIVETRAN_GOOGLE_ADS
+  stg_google_ads_database: RA_DATA_WAREHOUSE_DEV
+  stg_google_ads_api_source: google_ads
+  stg_google_ads__url_passthrough_metrics: []
+  stg_google_ads_criteria_passthrough_metrics: []
+  stg_google_ads_ad_stats_passthrough_metrics: []
+  stg_google_ads_click_performance: adwords_click_performance_report
 
-  facebook_ads_schema: fivetran_facebook_ads
-  facebook_ads_database: raw
-  facebook_ads_api_source: facebook_ads
+  ad_reporting__stg_facebook_ads_schema: staging
+  ad_reporting__stg_facebook_ads_database: RA_DATA_WAREHOUSE_DEV
+  ad_reporting__stg_google_ads_schema: staging
+  ad_reporting__stg_google_ads_database: RA_DATA_WAREHOUSE_DEV
+  ad_reporting__stg_stg_snapchat_ads_schema: staging
+  ad_reporting__stg_snapchat_ads_database: RA_DATA_WAREHOUSE_DEV
 
-  snapchat_ads_schema: fivetran_snapchat_ads
-  snapchat_ads_database: raw
-  snapchat_ads_api_source: snapchat_ads
+  stg_facebook_ads_schema: fivetran_facebook_ads
+  stg_facebook_ads_database: RA_DATA_WAREHOUSE_DEV
+  stg_facebook_ads_api_source: fivetran_facebook_ads
+
+  stg_stg_snapchat_ads_schema: fivetran_snapchat_ads
+  stg_snapchat_ads_database: RA_DATA_WAREHOUSE_DEV
+  stg_snapchat_ads_api_source: fivetran_snapchat_ads
 
   dbt_utils_dispatch_list: [spark_utils, fivetran_utils]
   fivetran_utils_dispatch_list: [spark_utils]

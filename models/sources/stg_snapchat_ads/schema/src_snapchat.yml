@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: snapchat_ads
-    schema: "{{ var('snapchat_ads_schema', var('snapchat_ads_api_source')) }}"
-    database: "{{ var('snapchat_ads_database', target.database) }}"
+    schema: "{{ var('stg_stg_snapchat_ads_schema', var('stg_snapchat_ads_api_source')) }}"
+    database: "{{ var('stg_snapchat_ads_database', target.database) }}"
     loader: Fivetran
     loaded_at_field: _fivetran_synced
 

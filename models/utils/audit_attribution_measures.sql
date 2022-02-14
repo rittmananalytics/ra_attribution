@@ -1,29 +1,60 @@
 with source_users as (
   select
-    date_trunc('month', joined_time) as months,
+    {{ dbt_utils.date_trunc('MONTH','user_created_date')}} as months,
     count(distinct user_id) as source_users
   from
-    {{ source('custom', 'users') }}
+
+    {% if var("attribution_demo_mode")  %}
+    (select
+      user_id, user_created_date
+    from
+      {{ ref("orders") }}
+    group by 1,2)
+    {% else %}
+    (select
+      *
+    from
+      {{ source('custom_events', 'users') }})
+    {% endif %}
+
   group by
     1
 ),
 source_orders as (
   select
-    date_trunc('month', created_time) as months,
+    {{ dbt_utils.date_trunc('MONTH','order_date')}} as months,
     count(distinct order_id) as source_orders
   from
-    {{ source('custom', 'orders') }}
+    {% if var("attribution_demo_mode")  %}
+      {{ ref("orders") }}
+    {% else %}
+      {{ source('custom_events', 'order_lines') }}
+    {% endif %}
   group by
     1
 ),
 source_revenue as (
   select
-    date_trunc('month', o.created_time) as months,
+    {{ dbt_utils.date_trunc('MONTH','o.order_date')}} as months,
     sum(ol.revenue_global_currency) as source_revenue
   from
-    {{ source('custom', 'order_lines') }} ol
+    (select
+      *
+    from
+    {% if var("attribution_demo_mode")  %}
+      {{ ref("orders") }}
+    {% else %}
+      {{ source('custom_events', 'order_lines') }}
+    {% endif %}) ol
   join
-    {{ source('custom', 'orders') }} o
+    (  select
+        *
+      from
+      {% if var("attribution_demo_mode")  %}
+        {{ ref("orders") }}
+      {% else %}
+        {{ source('custom_events', 'orders') }}
+      {% endif %}) o
   on
     o.order_id = ol.order_id
   group by
@@ -31,10 +62,14 @@ source_revenue as (
 ),
 source_snowplow_sessions as (
   select
-    date_trunc('month',event_time) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_time')}} as months,
     count(distinct domain_session_id) as source_snowplow_sessions
   from
-    {{ source('snowplow', 'events') }}
+      {% if var("attribution_demo_mode")  %}
+        {{ ref("events") }}
+      {% else %}
+        {{ source('snowplow', 'events') }}
+      {% endif %}
   where
     domain_session_id is not null
   group by
@@ -42,7 +77,7 @@ source_snowplow_sessions as (
 ),
 source_google_ad_measures as (
   select
-    date_trunc('month',date) as months,
+    {{ dbt_utils.date_trunc('MONTH','to_date(date)')}} as months,
     sum(clicks) as source_google_ad_clicks,
     sum(impressions) as source_google_ad_impressions,
     sum(cost) as source_google_ad_spend
@@ -53,18 +88,18 @@ source_google_ad_measures as (
 ),
 source_facebook_ad_measures as (
   select
-    date_trunc('month',date) as months,
+    {{ dbt_utils.date_trunc('MONTH','to_date(date)')}} as months,
     sum(inline_link_clicks) as source_fb_ad_clicks,
     sum(impressions) as source_fb_ad_impressions,
     sum(spend) as source_fb_ad_spend
   from
-    {{ source('facebook_ads','basic_ad') }}
+    {{ source('stg_facebook_ads','basic_ad') }}
   group by
     1
 ),
 staging_custom_generated_order_sessions as (
   select
-    date_trunc('month', event_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_ts')}} as months,
     count(distinct session_id) as staging_custom_generated_order_sessions
   from
     {{ ref('stg_custom_events_order_events') }}
@@ -75,7 +110,7 @@ staging_custom_generated_order_sessions as (
 ),
 staging_custom_generated_user_registration_sessions as (
   select
-    date_trunc('month', event_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_ts')}}  as months,
     count(distinct session_id) as staging_custom_generated_user_registration_sessions
   from
     {{ ref('stg_custom_events_registration_events') }}
@@ -86,7 +121,7 @@ staging_custom_generated_user_registration_sessions as (
 ),
 staging_snowplow_sessions as (
   select
-    date_trunc('month', event_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_ts')}}  as months,
     count(distinct session_id) as staging_snowplow_sessions
   from
     {{ ref('stg_snowplow_events_all_events')}}
@@ -95,7 +130,7 @@ staging_snowplow_sessions as (
 ),
 staging_users as (
   select
-    date_trunc('month', event_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_ts')}}  as months,
     count(distinct user_id) as staging_users
   from
     {{ ref('stg_custom_events_registration_events') }}
@@ -104,7 +139,7 @@ staging_users as (
 ),
 staging_orders as (
   select
-    date_trunc('month', event_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_ts')}}  as months,
     count(distinct event_id) as staging_orders,
     sum(revenue_global_currency) as staging_revenue
   from
@@ -114,18 +149,18 @@ staging_orders as (
 ),
 staging_google_ad_measures as (
   select
-    date_trunc('month',date_day) as months,
+    {{ dbt_utils.date_trunc('MONTH','to_date(date_day)')}}  as months,
     sum(clicks) as staging_google_ad_clicks,
     sum(impressions) as staging_google_ad_impressions,
     sum(spend_local_currency) as staging_google_ad_spend
   from
-    {{ ref('google_ads__url_ad_adapter') }}
+    {{ ref('stg_google_ads__url_ad_adapter') }}
   group by
     1
 ),
 staging_facebook_ad_measures as (
   select
-    date_trunc('month',date_day) as months,
+    {{ dbt_utils.date_trunc('MONTH','to_date(date_day)')}}  as months,
     sum(clicks) as staging_fb_ad_clicks,
     sum(impressions) as staging_fb_ad_impressions,
     sum(spend_local_currency) as staging_fb_ad_spend
@@ -136,7 +171,7 @@ staging_facebook_ad_measures as (
 ),
 int_users_orders as (
   select
-    date_trunc('month',event_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_ts')}}  as months,
     count(distinct case when event_type = '{{ var('attribution_create_account_event_type') }}' then event_id end ) as int_users,
     count(distinct case when event_type = 'confirmed_order' then event_id end ) as int_orders,
     sum(case when event_type = 'confirmed_order' then total_revenue_global_currency end) as int_revenue
@@ -147,7 +182,7 @@ int_users_orders as (
 ),
 int_sessions as (
   select
-    date_trunc('month',session_start_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','session_start_ts')}}  as months,
     count(distinct session_id) as int_sessions
   from
     {{ ref('int_web_sessions') }}
@@ -156,7 +191,7 @@ int_sessions as (
 ),
 int_ad_measures as (
   select
-    date_trunc('month',campaign_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','campaign_ts')}}  as months,
     sum(reported_clicks) as int_ad_clicks,
     sum(reported_impressions) as int_ad_impressions,
     sum(reported_spend_local_currency) as int_ad_spend
@@ -167,7 +202,7 @@ int_ad_measures as (
 ),
 warehouse_sessions as (
   select
-    date_trunc('month',session_start_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','session_start_ts')}} as months,
     count(distinct session_id) as warehouse_sessions
   from
     {{ ref('wh_web_sessions_fact') }}
@@ -176,7 +211,7 @@ warehouse_sessions as (
 ),
 warehouse_users_orders as (
   select
-    date_trunc('month',event_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','event_ts')}} as months,
     count(distinct case when event_type = '{{ var('attribution_create_account_event_type') }}' then event_id end ) as warehouse_users,
     count(distinct case when event_type = 'confirmed_order' then event_id end ) as warehouse_orders,
     sum(case when event_type = 'confirmed_order' then total_revenue_global_currency end ) as warehouse_revenue
@@ -187,7 +222,7 @@ warehouse_users_orders as (
 ),
 warehouse_ad_measures as (
   select
-    date_trunc('month',campaign_ts) as months,
+    {{ dbt_utils.date_trunc("MONTH",'campaign_ts')}}  as months,
     sum(reported_clicks) as wh_ad_clicks,
     sum(reported_impressions) as wh_ad_impressions,
     sum(reported_spend_local_currency) as wh_ad_spend
@@ -198,7 +233,7 @@ warehouse_ad_measures as (
 ),
 attribution_users_orders as (
   select
-    date_trunc('month',converted_ts) as months,
+    {{ dbt_utils.date_trunc('MONTH','converted_ts')}}  as months,
     sum(count_registration_conversions) as attribution_users,
     sum(count_first_order_conversions)+sum(count_repeat_order_conversions) as attribution_orders,
     sum(first_order_total_revenue_global_currency) + sum(repeat_order_total_revenue_global_currency) as attribution_revenue

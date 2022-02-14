@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: facebook_ads__ad_adapter
+  - name: stg_facebook_ads__ad_adapter
     description: Each record represents the daily performance of a Facebook ad at the URL level.
     columns:
       - name: date_day
@@ -25,7 +25,7 @@ models:
       - name: creative_id
         description: The ID of the related creative.
       - name: creative_name
-        description: The name of the related creative.     
+        description: The name of the related creative.
       - name: base_url
         description: The base URL of the ad, extracted from the page_link and template_page_link.
       - name: url_host
@@ -49,7 +49,7 @@ models:
       - name: spend
         description: The spend on the ad in the given day.
 
-  - name: facebook_ads__ad_set_report
+  - name: stg_facebook_ads__ad_set_report
     description: Each record represents the daily performance of a Facebook ad set.
     columns:
       - name: date_day
@@ -73,7 +73,7 @@ models:
       - name: spend
         description: The spend on the ad in the given day.
 
-  - name: facebook_ads__campaign_report
+  - name: stg_facebook_ads__campaign_report
     description: Each record represents the daily performance of a Facebook campaign.
     columns:
       - name: date_day
@@ -93,7 +93,7 @@ models:
       - name: spend
         description: The spend on the ad in the given day.
 
-  - name: facebook_ads__account_report
+  - name: stg_facebook_ads__account_report
     description: Each record represents the daily performance of a Facebook account.
     columns:
       - name: date_day

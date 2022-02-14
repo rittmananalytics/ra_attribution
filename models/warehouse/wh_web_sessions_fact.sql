@@ -42,7 +42,7 @@ with sessions as
       FROM
         {{ ref('int_web_sessions') }}
       )
-      {{ dbt_utils.group_by(n=28) }}
+      {{ dbt_utils.group_by(n=27) }}
 ),
 ad_click_ids as (
   select
@@ -63,7 +63,7 @@ ad_click_ids as (
         Note : as we can't reliably use utm_source to determine the Ad network (platform) value, we infer it using the presence of "gclid" or "fbclid" in the URL, or "google"/"facebook" in utm_source */
 
 joined as (
-  select
+
     SELECT {{ dbt_utils.surrogate_key(['session_id']) }} as web_session_pk,
     s.*,
     case

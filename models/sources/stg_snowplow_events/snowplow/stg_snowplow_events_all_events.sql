@@ -7,7 +7,11 @@ with
     select
       *
     from
-      {{ source('snowplow', 'events') }}
+      {% if var("attribution_demo_mode")  %}
+        {{ ref("events") }}
+      {% else %}
+        {{ source('snowplow', 'events') }}
+      {% endif %}
     where
       domain_session_id is not null
     ),
@@ -49,14 +53,14 @@ with
 
         -- paid social:
         when page_url ilike '%fbclid%'
-            and (rlike(concat(referer_url_host,referer_url_path,referer_url_query),'.*(instagram|facebook).*','i') or concat(referer_url_host,referer_url_path,referer_url_query) is null)
+            and (rlike(referer_url_host,'.*(instagram|facebook).*','i') or referer_url_host is null)
         then 'paid social'
         when referer_url_host ilike '%snapchat%' or rlike(marketing_source,'.*(snap).*','i')
         then 'paid social'
 
         -- organic social:
         when not page_url ilike '%fbclid%'
-        and rlike(concat(referer_url_host,referer_url_path,referer_url_query),'.*(instagram|facebook).*','i')
+        and rlike(referer_url_host,'.*(instagram|facebook).*','i')
         then 'organic social'
 
         -- email:
@@ -79,8 +83,8 @@ with
         then 'payment gateway'
 
         -- referrals:
-        when concat(referer_url_host,referer_url_path,referer_url_query) is not null
-            and not rlike(referer_url_host,'.*(custom\.com|kolonial\.no).*','i')
+        when referer_url_host is not null
+            and not rlike(referer_url_host,'.*(custom\.com).*','i')
         then 'referral'
         else 'direct'
       end as channel,

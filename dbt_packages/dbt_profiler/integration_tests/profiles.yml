@@ -1,0 +1,27 @@
+config:
+  send_anonymous_usage_stats: False
+  use_colors: True
+
+integration_tests:
+  target: postgres
+  outputs:
+    postgres:
+      type: postgres
+      host: '{{ env_var("POSTGRES_HOST") }}'
+      user: dbt
+      pass: dbt
+      port: 5432
+      dbname: dbt
+      schema: dbt_profiler_integration_tests_postgres
+      threads: 1
+    bigquery:
+      type: bigquery
+      method: service-account
+      project: '{{ env_var("BIGQUERY_PROJECT") }}'
+      dataset: dbt_profiler_integration_tests_bigquery
+      location: US
+      threads: 4
+      keyfile: '{{ env_var("BIGQUERY_KEYFILE") }}'
+      timeout_seconds: 300
+      priority: interactive
+      retries: 1

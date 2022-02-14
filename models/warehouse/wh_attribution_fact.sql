@@ -8,6 +8,52 @@
     )
 }}
 
+{% set partition_by = "partition by session_id" %}
+
+{% set user_cycle_partition_by = "partition by user_id, user_conversion_cycle" %}
+
+{% set user_window_clause = "
+    partition by user_id
+    order by session_start_ts
+    rows between unbounded preceding and unbounded following
+    " %}
+
+{% set user_event_window_clause = "
+    partition by user_id
+    order by event_ts
+    rows between unbounded preceding and unbounded following
+    " %}
+
+{% set user_conversion_cycle_clause = "
+    partition by user_id, user_conversion_cycle
+    order by session_start_ts
+    " %}
+
+{% set user_session_window_clause = "
+    partition by user_id
+    order by session_start_ts
+    rows between unbounded preceding and current row
+        " %}
+
+{% set order_condition = "
+    event_type='"~var('attribution_conversion_event_type')~"'
+    " %}
+
+{% set first_order_condition = "
+    event_type='"~var('attribution_conversion_event_type')~
+    "' and event_id = first_order_event_id
+    " %}
+
+{% set repeat_order_condition = "
+    event_type='"~var('attribution_conversion_event_type')~
+    "' and event_id != first_order_event_id
+    " %}
+
+{% set user_registration_condition = "
+    event_type='"~var('attribution_create_account_event_type')~
+    "' and event_id = first_registration_event_id
+    " %}
+
 
 
 with
@@ -20,13 +66,13 @@ events_filtered as
   from (
     select
       *,
-      first_value(case when event_type = '{{ var('attribution_create_account_event_type') }}' then event_id end ignore nulls) over (partition by user_id order by event_ts rows between unbounded preceding and unbounded following) as first_registration_event_id,
-      first_value(case when event_type = '{{ var('attribution_conversion_event_type') }}' then event_id end ignore nulls) over (partition by user_id order by event_ts rows between unbounded preceding and unbounded following) as first_order_event_id
+      first_value(case when event_type = '{{ var('attribution_create_account_event_type') }}' then event_id end ignore nulls) over ({{user_event_window_clause}}) as first_registration_event_id,
+      first_value(case when {{order_condition}} then event_id end ignore nulls) over ({{user_event_window_clause}}) as first_order_event_id
     from
       {{ ref ('wh_web_events_fact') }})
   where
-    ((event_type = '{{ var('attribution_conversion_event_type') }}'
-    or (event_type = '{{ var('attribution_create_account_event_type') }}' and event_id = first_registration_event_id)) and user_id not in ('-2','-1'))
+    event_type = '{{ var('attribution_conversion_event_type') }}'
+    or ({{user_registration_condition}})
   ),
 
 /* get the pre-calculated user LTVs over 30,60,90,180 and 365 days, with LTV = lifetime customer spend */
@@ -49,26 +95,23 @@ events_filtered as
       session_id,
       event_type,
       order_id,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then total_revenue_local_currency else 0 end as first_order_total_revenue_local_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then total_revenue_global_currency else 0 end as first_order_total_revenue_global_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_30d_local_currency else 0 end as first_order_total_lifetime_value_30d_local_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_30d_global_currency else 0 end as first_order_total_lifetime_value_30d_global_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_60d_local_currency else 0 end as first_order_total_lifetime_value_60d_local_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_60d_global_currency else 0 end as first_order_total_lifetime_value_60d_global_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_90d_local_currency else 0 end as first_order_total_lifetime_value_90d_local_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_90d_global_currency else 0 end as first_order_total_lifetime_value_90d_global_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_180d_local_currency else 0 end as first_order_total_lifetime_value_180d_local_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_180d_global_currency else 0 end as first_order_total_lifetime_value_180d_global_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_365d_local_currency else 0 end as first_order_total_lifetime_value_365d_local_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then l.ltv_365d_global_currency else 0 end as first_order_total_lifetime_value_365d_global_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id != first_order_event_id then total_revenue_local_currency else 0 end as repeat_order_total_revenue_local_currency,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id != first_order_event_id then total_revenue_global_currency else 0 end as repeat_order_total_revenue_global_currency,
+
+
+
+      {% for measure in var('attribution_input_measures') %}
+
+        case when {{first_order_condition}} then {{measure}} else 0 end as first_order_{{measure}},
+
+      {% endfor %}
+
+      case when {{repeat_order_condition}} then total_revenue_local_currency else 0 end as repeat_order_total_revenue_local_currency,
+      case when {{repeat_order_condition}} then total_revenue_global_currency else 0 end as repeat_order_total_revenue_global_currency,
       e.local_currency,
       case when event_type in ('{{ var('attribution_conversion_event_type') }}','{{ var('attribution_create_account_event_type') }}') then 1 else 0 end as count_conversions,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id = first_order_event_id then 1 else 0 end as count_first_order_conversions,
-      case when event_type = '{{ var('attribution_conversion_event_type') }}' and event_id != first_order_event_id then 1 else 0 end as count_repeat_order_conversions,
+      case when {{first_order_condition}} then 1 else 0 end as count_first_order_conversions,
+      case when {{repeat_order_condition}} then 1 else 0 end as count_repeat_order_conversions,
       case when event_type = '{{ var('attribution_conversion_event_type') }}' then 1 else 0 end as count_order_conversions,
-      case when event_type = '{{ var('attribution_create_account_event_type') }}' and event_id = first_registration_event_id then 1 else 0 end as count_registration_conversions,
+      case when {{user_registration_condition}} then 1 else 0 end as count_registration_conversions,
       event_ts as converted_ts
     from
      events_filtered e
@@ -91,18 +134,12 @@ converting_sessions_deduped as
  /* note that because a session could in-theory contain account opening, first order and multiple repeat order events (conversions) within the same session, we have to aggregate the
  value of those conversions when working at the session level */
 
-    sum(first_order_total_revenue_local_currency) as first_order_total_revenue_local_currency,
-    sum(first_order_total_revenue_global_currency) as first_order_total_revenue_global_currency,
-    sum(first_order_total_lifetime_value_30d_local_currency) as first_order_total_lifetime_value_30d_local_currency,
-    sum(first_order_total_lifetime_value_30d_global_currency) as first_order_total_lifetime_value_30d_global_currency,
-    sum(first_order_total_lifetime_value_60d_local_currency) as first_order_total_lifetime_value_60d_local_currency,
-    sum(first_order_total_lifetime_value_60d_global_currency) as first_order_total_lifetime_value_60d_global_currency,
-    sum(first_order_total_lifetime_value_90d_local_currency) as first_order_total_lifetime_value_90d_local_currency,
-    sum(first_order_total_lifetime_value_90d_global_currency) as first_order_total_lifetime_value_90d_global_currency,
-    sum(first_order_total_lifetime_value_180d_local_currency) as first_order_total_lifetime_value_180d_local_currency,
-    sum(first_order_total_lifetime_value_180d_global_currency) as first_order_total_lifetime_value_180d_global_currency,
-    sum(first_order_total_lifetime_value_365d_local_currency) as first_order_total_lifetime_value_365d_local_currency,
-    sum(first_order_total_lifetime_value_365d_global_currency) as first_order_total_lifetime_value_365d_global_currency,
+    {% for measure in var('attribution_input_measures') %}
+
+      sum(first_order_{{measure}}) as first_order_{{measure}},
+
+    {% endfor %}
+
     sum(repeat_order_total_revenue_local_currency) as repeat_order_total_revenue_local_currency,
     sum(repeat_order_total_revenue_global_currency) as repeat_order_total_revenue_global_currency,
     max(local_currency) as local_currency,
@@ -144,6 +181,11 @@ converting_sessions_deduped as
               s.session_end_ts as session_end_ts,
               c.converted_ts as converted_ts,
               c.min_converted_ts as min_converted_ts,
+              sum(c.count_conversions) as count_conversions,
+              sum(c.count_order_conversions) as count_order_conversions,
+              sum(c.count_first_order_conversions) as count_first_order_conversions,
+              sum(c.count_repeat_order_conversions) as count_repeat_order_conversions,
+              sum(c.count_registration_conversions) as count_registration_conversions,
               coalesce(case when c.count_conversions >0 then true else false end,false) as conversion_session,
               coalesce(case when c.count_conversions >0 then 1 else 0 end,0) as conversion_event,  --used when calculating the conversion cycle number
               coalesce(case when c.count_order_conversions>0 then 1 else 0 end ,0) as order_conversion_event, --used when calculating the order converion cycle number
@@ -164,26 +206,15 @@ converting_sessions_deduped as
               case when lower(channel) = 'direct' then false else true end as is_non_direct_channel,
               case when lower(channel) like '%paid%' then true else false end as is_paid_channel,
               events as events,
-              c.first_order_total_revenue_local_currency as first_order_total_revenue_local_currency,
-              c.first_order_total_revenue_global_currency as first_order_total_revenue_global_currency,
+
+              {% for measure in var('attribution_input_measures') %}
+
+                c.first_order_{{measure}} as first_order_{{measure}},
+
+              {% endfor %}
               c.repeat_order_total_revenue_local_currency as repeat_order_total_revenue_local_currency,
               c.repeat_order_total_revenue_global_currency as repeat_order_total_revenue_global_currency,
-              c.first_order_total_lifetime_value_30d_local_currency as first_order_total_lifetime_value_30d_local_currency,
-              c.first_order_total_lifetime_value_30d_global_currency as first_order_total_lifetime_value_30d_global_currency,
-              c.first_order_total_lifetime_value_60d_local_currency as first_order_total_lifetime_value_60d_local_currency,
-              c.first_order_total_lifetime_value_60d_global_currency as first_order_total_lifetime_value_60d_global_currency,
-              c.first_order_total_lifetime_value_90d_local_currency as first_order_total_lifetime_value_90d_local_currency,
-              c.first_order_total_lifetime_value_90d_global_currency as first_order_total_lifetime_value_90d_global_currency,
-              c.first_order_total_lifetime_value_180d_local_currency as first_order_total_lifetime_value_180d_local_currency,
-              c.first_order_total_lifetime_value_180d_global_currency as first_order_total_lifetime_value_180d_global_currency,
-              c.first_order_total_lifetime_value_365d_local_currency as first_order_total_lifetime_value_365d_local_currency,
-              c.first_order_total_lifetime_value_365d_global_currency as first_order_total_lifetime_value_365d_global_currency,
-              c.local_currency as local_currency,
-              sum(c.count_conversions) as count_conversions,
-              sum(c.count_order_conversions) as count_order_conversions,
-              sum(c.count_first_order_conversions) as count_first_order_conversions,
-              sum(c.count_repeat_order_conversions) as count_repeat_order_conversions,
-              sum(c.count_registration_conversions) as count_registration_conversions
+              c.local_currency as local_currency
             from
               {{ ref('wh_web_sessions_fact') }} s
             left join
@@ -194,7 +225,8 @@ converting_sessions_deduped as
               user_ltvs l
             on
               s.user_id = l.user_id
-            {{ dbt_utils.group_by(42) }}
+            group by
+              1,2,3,4,5,6,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46
         )
     )
     WHERE
@@ -210,11 +242,11 @@ touchpoint_and_converting_sessions_labelled_with_conversion_number AS
   (
     select
       *,
-      sum(conversion_event) over (partition by user_id order by session_start_ts rows between unbounded preceding and current row) as user_total_conversions,
-      sum(count_order_conversions) over (partition by user_id order by session_start_ts rows between unbounded preceding and current row) as user_total_order_conversions,
-      sum(count_registration_conversions) over (partition by user_id order by session_start_ts rows between unbounded preceding and current row) as user_total_registration_conversions,
-      sum(count_first_order_conversions) over (partition by user_id order by session_start_ts rows between unbounded preceding and current row) as user_total_first_order_conversions,
-      sum(count_repeat_order_conversions) over (partition by user_id order by session_start_ts rows between unbounded preceding and current row) as user_total_repeat_order_conversions
+      sum(conversion_event) over ({{user_session_window_clause}}) as user_total_conversions,
+      sum(count_order_conversions) over ({{user_session_window_clause}}) as user_total_order_conversions,
+      sum(count_registration_conversions) over ({{user_session_window_clause}}) as user_total_registration_conversions,
+      sum(count_first_order_conversions) over ({{user_session_window_clause}}) as user_total_first_order_conversions,
+      sum(count_repeat_order_conversions) over ({{user_session_window_clause}}) as user_total_repeat_order_conversions
     from
         touchpoint_and_converting_sessions_labelled
 
@@ -227,28 +259,20 @@ touchpoint_and_converting_sessions_labelled_with_conversion_number AS
 touchpoint_and_converting_sessions_labelled_with_conversion_number_and_conversion_cycles as (
     select
       * ,
-      case when registration_conversion_event = 0 then max(coalesce(user_total_registration_conversions,0)) over (partition by user_id
-        order by session_start_ts rows between unbounded preceding and current row) + 1
-      else max(user_total_registration_conversions) over (partition by user_id
-        order by session_start_ts rows between unbounded preceding and current row)
+      case when registration_conversion_event = 0 then max(coalesce(user_total_registration_conversions,0)) over ({{user_session_window_clause}}) + 1
+      else max(user_total_registration_conversions) over ({{user_session_window_clause}})
       end as user_registration_conversion_cycle,
 
-      case when conversion_event = 0 then max(coalesce(user_total_conversions,0))              over (partition by user_id
-        order by session_start_ts rows between unbounded preceding and current row) + 1
-      else max(user_total_conversions) over (partition by user_id
-        order by session_start_ts rows between unbounded preceding and current row)
+      case when conversion_event = 0 then max(coalesce(user_total_conversions,0)) over ({{user_session_window_clause}}) + 1
+      else max(user_total_conversions) over ({{user_session_window_clause}})
       end as user_conversion_cycle,
 
-      case when first_order_conversion_event = 0 then max(coalesce(user_total_first_order_conversions,0))     over (partition by user_id
-          order by session_start_ts rows between unbounded preceding and current row) + 1
-        else max(user_total_first_order_conversions) over (partition by user_id
-          order by session_start_ts rows between unbounded preceding and current row)
+      case when first_order_conversion_event = 0 then max(coalesce(user_total_first_order_conversions,0)) over ({{user_session_window_clause}}) + 1
+        else max(user_total_first_order_conversions) over ({{user_session_window_clause}})
       end as user_first_order_conversion_cycle,
 
-      case when repeat_order_conversion_event = 0 then max(coalesce(user_total_repeat_order_conversions,0)) over (partition by user_id
-            order by session_start_ts rows between unbounded preceding and current row) + 1
-          else max(user_total_repeat_order_conversions) over (partition by user_id
-            order by session_start_ts rows between unbounded preceding and current row)
+      case when repeat_order_conversion_event = 0 then max(coalesce(user_total_repeat_order_conversions,0)) over ({{user_session_window_clause}}) + 1
+          else max(user_total_repeat_order_conversions) over ({{user_session_window_clause}})
           end as user_repeat_order_conversion_cycle
     from touchpoint_and_converting_sessions_labelled_with_conversion_number
 ),
@@ -321,23 +345,17 @@ attrib_calc_flags as (
 
   select
     *,
-    {{ iff() }} (first_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_non_direct_channel = true then web_session_pk end) ignore nulls over (partition by user_id, user_conversion_cycle
-      order by session_start_ts)=web_session_pk,true,false) as is_first_non_direct_channel_in_conversion_cycle,
+    {{ iff() }} (first_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_non_direct_channel = true then web_session_pk end) ignore nulls over ({{user_conversion_cycle_clause}})=web_session_pk,true,false) as is_first_non_direct_channel_in_conversion_cycle,
 
-    {{ iff() }} (last_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_non_direct_channel = true then web_session_pk end) ignore nulls over (partition by user_id, user_conversion_cycle
-      order by session_start_ts)=web_session_pk,true,false) as is_last_non_direct_channel_in_conversion_cycle,
+    {{ iff() }} (last_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_non_direct_channel = true then web_session_pk end) ignore nulls over ({{user_conversion_cycle_clause}})=web_session_pk,true,false) as is_last_non_direct_channel_in_conversion_cycle,
 
-    {{ iff() }} (sum(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_non_direct_channel = true then 1 end) over (partition by user_id, user_conversion_cycle
-      order by session_start_ts rows between unbounded preceding and unbounded following)>0,true,false) as is_conversion_cycle_with_non_direct,
+    {{ iff() }} (sum(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_non_direct_channel = true then 1 end) over ({{user_conversion_cycle_clause}} rows between unbounded preceding and unbounded following)>0,true,false) as is_conversion_cycle_with_non_direct,
 
-    {{ iff() }} (first_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_paid_channel = true then web_session_pk end) ignore nulls over (partition by user_id, user_conversion_cycle
-      order by session_start_ts)=web_session_pk,true,false)  as is_first_paid_channel_in_conversion_cycle,
+    {{ iff() }} (first_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_paid_channel = true then web_session_pk end) ignore nulls over ({{user_conversion_cycle_clause}})=web_session_pk,true,false)  as is_first_paid_channel_in_conversion_cycle,
 
-    {{ iff() }} (last_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_paid_channel = true then web_session_pk end) ignore nulls over (partition by user_id, user_conversion_cycle
-      order by session_start_ts)=web_session_pk,true,false)  as is_last_paid_channel_in_conversion_cycle,
+    {{ iff() }} (last_value(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_paid_channel = true then web_session_pk end) ignore nulls over ({{user_conversion_cycle_clause}})=web_session_pk,true,false)  as is_last_paid_channel_in_conversion_cycle,
 
-    {{ iff() }} (sum(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_paid_channel = true then 1 end) over (partition by user_id, user_conversion_cycle
-      order by session_start_ts rows between unbounded preceding and unbounded following)>0,true,false) as is_conversion_cycle_with_paid
+    {{ iff() }} (sum(case when is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}) and is_paid_channel = true then 1 end) over ({{user_conversion_cycle_clause}} rows between unbounded preceding and unbounded following)>0,true,false) as is_conversion_cycle_with_paid
   from
     split_time_decay_score_across_days_sessions
 ),
@@ -414,349 +432,43 @@ session_attrib_pct as (
 /* Now calculate the actual account opening, first order, repeat order and LTV conversion numbers based on the attribution percentages calculated for the session */
 /* Note - the Max() aggregations may no longer be needed, they are there from when we did a further join to campaigns but that's since been removed from the code */
 
+
+
+
+
 final as (
   select
-    a.*,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as user_registration_first_click_attrib_conversions,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as user_registration_first_non_direct_click_attrib_conversions,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as user_registration_first_paid_click_attrib_conversions,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as user_registration_last_click_attrib_conversions,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as user_registration_last_non_direct_click_attrib_conversions,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as user_registration_last_paid_click_attrib_conversions,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as user_registration_even_click_attrib_conversions,
-    (max(count_registration_conversions) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as user_registration_time_decay_attrib_conversions,
 
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_attrib_conversions,
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_attrib_conversions,
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_attrib_conversions,
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_attrib_conversions,
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_attrib_conversions,
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_attrib_conversions,
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_attrib_conversions,
-    (max(count_first_order_conversions) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_attrib_conversions,
+    {% for (key,value) in var('attribution_output_conversion_measures').items() %}
 
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_attrib_revenue_global_currency,
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_attrib_revenue_global_currency,
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_attrib_revenue_global_currency,
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_attrib_revenue_global_currency,
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_attrib_revenue_global_currency,
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_attrib_revenue_global_currency,
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_attrib_revenue_global_currency,
-    (max(first_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_attrib_revenue_local_currency,
-    (max(first_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_attrib_revenue_global_currency,
+      {% for model in var('attribution_models')  %}
 
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_30d_global_currency,
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_30d_global_currency,
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_30d_global_currency,
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_30d_global_currency,
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_30d_global_currency,
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_30d_global_currency,
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_30d_global_currency,
-    (max(first_order_total_lifetime_value_30d_local_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_30d_local_currency,
-    (max(first_order_total_lifetime_value_30d_global_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_30d_global_currency,
+      {{key}} * {{model}}_pct as {{value}}_{{model}}_conversions,
 
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_60d_global_currency,
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_60d_global_currency,
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_60d_global_currency,
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_60d_global_currency,
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_60d_global_currency,
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_60d_global_currency,
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_60d_global_currency,
-    (max(first_order_total_lifetime_value_60d_local_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_60d_local_currency,
-    (max(first_order_total_lifetime_value_60d_global_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_60d_global_currency,
+      {% endfor %}
 
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_90d_global_currency,
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_90d_global_currency,
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_90d_global_currency,
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_90d_global_currency,
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_90d_global_currency,
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_90d_global_currency,
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_90d_global_currency,
-    (max(first_order_total_lifetime_value_90d_local_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_90d_local_currency,
-    (max(first_order_total_lifetime_value_90d_global_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_90d_global_currency,
+    {% endfor %}
 
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_180d_global_currency,
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_180d_global_currency,
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_180d_global_currency,
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_180d_global_currency,
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_180d_global_currency,
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_180d_global_currency,
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_180d_global_currency,
-    (max(first_order_total_lifetime_value_180d_local_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_180d_local_currency,
-    (max(first_order_total_lifetime_value_180d_global_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_180d_global_currency,
+    {% for (key,value) in var('attribution_output_revenue_measures').items() %}
 
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as first_order_first_click_total_lifetime_value_365d_global_currency,
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as first_order_first_non_direct_click_total_lifetime_value_365d_global_currency,
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as first_order_first_paid_click_total_lifetime_value_365d_global_currency,
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as first_order_last_click_total_lifetime_value_365d_global_currency,
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as first_order_last_non_direct_click_total_lifetime_value_365d_global_currency,
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as first_order_last_paid_click_total_lifetime_value_365d_global_currency,
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as first_order_even_click_total_lifetime_value_365d_global_currency,
-    (max(first_order_total_lifetime_value_365d_local_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_365d_local_currency,
-    (max(first_order_total_lifetime_value_365d_global_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as first_order_time_decay_total_lifetime_value_365d_global_currency,
+      {% for model in var('attribution_models')  %}
 
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as repeat_order_first_click_attrib_conversions,
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as repeat_order_first_non_direct_click_attrib_conversions,
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as repeat_order_first_paid_click_attrib_conversions,
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as repeat_order_last_click_attrib_conversions,
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as repeat_order_last_non_direct_click_attrib_conversions,
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as repeat_order_last_paid_click_attrib_conversions,
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as repeat_order_even_click_attrib_conversions,
-    (max(count_repeat_order_conversions) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as repeat_order_time_decay_attrib_conversions,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as repeat_order_first_click_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * first_click_attrib_pct) as repeat_order_first_click_attrib_revenue_global_currency,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as repeat_order_first_non_direct_click_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * first_non_direct_click_attrib_pct) as repeat_order_first_non_direct_click_attrib_revenue_global_currency,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as repeat_order_first_paid_click_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * first_paid_click_attrib_pct) as repeat_order_first_paid_click_attrib_revenue_global_currency,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as repeat_order_last_click_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * last_click_attrib_pct) as repeat_order_last_click_attrib_revenue_global_currency,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as repeat_order_last_non_direct_click_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * last_non_direct_click_attrib_pct) as repeat_order_last_non_direct_click_attrib_revenue_global_currency,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as repeat_order_last_paid_click_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * last_paid_click_attrib_pct) as repeat_order_last_paid_click_attrib_revenue_global_currency,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as repeat_order_even_click_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * even_click_attrib_pct) as repeat_order_even_click_attrib_revenue_global_currency,
-    (max(repeat_order_total_revenue_local_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as repeat_order_time_decay_attrib_revenue_local_currency,
-    (max(repeat_order_total_revenue_global_currency) over (partition by user_id, user_conversion_cycle) * time_decay_attrib_pct) as repeat_order_time_decay_attrib_revenue_global_currency
+      {{key}} * {{model}}_pct as {{value}}_{{model}},
+
+      {% endfor %}
+
+    {% endfor %}
+    a.*
+
   from
     session_attrib_pct a
-  {{ dbt_utils.group_by(82) }}
+
 )
 
 /* output all of the attribution model numbers and dimension attributes, plus all the columns and intermediate calculation values that might be useful for later debugging */
 
 SELECT
-  user_id,
-  session_start_ts,
-  session_end_ts,
-  session_id,
-  web_session_pk,
-  is_excluded_user_session,
-  session_seq,
-  conversion_session,
-  utm_source,
-  utm_content,
-  utm_medium,
-  utm_campaign,
-  platform,
-  campaign_id,
-  ad_group_id,
-  referrer_host,
-  referrer_domain,
-  channel,
-  first_order_total_revenue_local_currency,
-  first_order_total_revenue_global_currency,
-  first_order_total_lifetime_value_30d_local_currency,
-  first_order_total_lifetime_value_30d_global_currency,
-  first_order_total_lifetime_value_60d_local_currency,
-  first_order_total_lifetime_value_60d_global_currency,
-  first_order_total_lifetime_value_90d_local_currency,
-  first_order_total_lifetime_value_90d_global_currency,
-  first_order_total_lifetime_value_180d_local_currency,
-  first_order_total_lifetime_value_180d_global_currency,
-  first_order_total_lifetime_value_365d_local_currency,
-  first_order_total_lifetime_value_365d_global_currency,
-  repeat_order_total_revenue_local_currency,
-  repeat_order_total_revenue_global_currency,
-  local_currency,
-  user_conversion_cycle,
-  converted_ts,
-  min_converted_ts,
-  user_registration_conversion_cycle,
-  user_first_order_conversion_cycle,
-  user_repeat_order_conversion_cycle,
-  is_within_attribution_lookback_window,
-  is_within_attribution_time_decay_days_window,
-  is_non_direct_channel,
-  is_paid_channel,
-  sessions_within_day_to_conversion,
-  time_decay_score,
-  apportioned_time_decay_score,
-  days_before_conversion,
-  weighting AS time_decay_score_weighting,
-  weighting_split_by_days_sessions AS time_decay_weighting_split_by_days_sessions,
-  count_conversions,
-  count_order_conversions,
-  count_first_order_conversions,
-  count_repeat_order_conversions,
-  count_registration_conversions,
-  first_click_attrib_pct,
-  first_non_direct_click_attrib_pct,
-  first_paid_click_attrib_pct,
-  last_click_attrib_pct,
-  last_non_direct_click_attrib_pct,
-  last_paid_click_attrib_pct,
-  even_click_attrib_pct,
-  time_decay_attrib_pct,
-  user_registration_first_click_attrib_conversions,
-  user_registration_first_non_direct_click_attrib_conversions,
-  user_registration_first_paid_click_attrib_conversions,
-  user_registration_last_click_attrib_conversions,
-  user_registration_last_non_direct_click_attrib_conversions,
-  user_registration_last_paid_click_attrib_conversions,
-  user_registration_even_click_attrib_conversions,
-  user_registration_time_decay_attrib_conversions,
-  first_order_first_click_attrib_conversions,
-  first_order_first_non_direct_click_attrib_conversions,
-  first_order_first_paid_click_attrib_conversions,
-  first_order_last_click_attrib_conversions,
-  first_order_last_non_direct_click_attrib_conversions,
-  first_order_last_paid_click_attrib_conversions,
-  first_order_even_click_attrib_conversions,
-  first_order_time_decay_attrib_conversions,
-  first_order_first_click_attrib_revenue_local_currency,
-  first_order_first_click_attrib_revenue_global_currency,
-  first_order_first_non_direct_click_attrib_revenue_local_currency,
-  first_order_first_non_direct_click_attrib_revenue_global_currency,
-  first_order_first_paid_click_attrib_revenue_local_currency,
-  first_order_first_paid_click_attrib_revenue_global_currency,
-  first_order_last_click_attrib_revenue_local_currency,
-  first_order_last_click_attrib_revenue_global_currency,
-  first_order_last_non_direct_click_attrib_revenue_local_currency,
-  first_order_last_non_direct_click_attrib_revenue_global_currency,
-  first_order_last_paid_click_attrib_revenue_local_currency,
-  first_order_last_paid_click_attrib_revenue_global_currency,
-  first_order_even_click_attrib_revenue_local_currency,
-  first_order_even_click_attrib_revenue_global_currency,
-  first_order_time_decay_attrib_revenue_local_currency,
-  first_order_time_decay_attrib_revenue_global_currency,
-  first_order_first_click_total_lifetime_value_30d_local_currency,
-  first_order_first_click_total_lifetime_value_30d_global_currency,
-  first_order_first_non_direct_click_total_lifetime_value_30d_local_currency,
-  first_order_first_non_direct_click_total_lifetime_value_30d_global_currency,
-  first_order_last_click_total_lifetime_value_30d_local_currency,
-  first_order_last_click_total_lifetime_value_30d_global_currency,
-  first_order_last_non_direct_click_total_lifetime_value_30d_local_currency,
-  first_order_last_non_direct_click_total_lifetime_value_30d_global_currency,
-  first_order_last_paid_click_total_lifetime_value_30d_local_currency,
-  first_order_last_paid_click_total_lifetime_value_30d_global_currency,
-  first_order_even_click_total_lifetime_value_30d_local_currency,
-  first_order_even_click_total_lifetime_value_30d_global_currency,
-  first_order_time_decay_total_lifetime_value_30d_local_currency,
-  first_order_time_decay_total_lifetime_value_30d_global_currency,
-  first_order_first_click_total_lifetime_value_60d_local_currency,
-  first_order_first_click_total_lifetime_value_60d_global_currency,
-  first_order_first_non_direct_click_total_lifetime_value_60d_local_currency,
-  first_order_first_non_direct_click_total_lifetime_value_60d_global_currency,
-  first_order_last_click_total_lifetime_value_60d_local_currency,
-  first_order_last_click_total_lifetime_value_60d_global_currency,
-  first_order_last_non_direct_click_total_lifetime_value_60d_local_currency,
-  first_order_last_non_direct_click_total_lifetime_value_60d_global_currency,
-  first_order_last_paid_click_total_lifetime_value_60d_local_currency,
-  first_order_last_paid_click_total_lifetime_value_60d_global_currency,
-  first_order_even_click_total_lifetime_value_60d_local_currency,
-  first_order_even_click_total_lifetime_value_60d_global_currency,
-  first_order_time_decay_total_lifetime_value_60d_local_currency,
-  first_order_time_decay_total_lifetime_value_60d_global_currency,
-  first_order_first_click_total_lifetime_value_90d_local_currency,
-  first_order_first_click_total_lifetime_value_90d_global_currency,
-  first_order_first_non_direct_click_total_lifetime_value_90d_local_currency,
-  first_order_first_non_direct_click_total_lifetime_value_90d_global_currency,
-  first_order_last_click_total_lifetime_value_90d_local_currency,
-  first_order_last_click_total_lifetime_value_90d_global_currency,
-  first_order_last_non_direct_click_total_lifetime_value_90d_local_currency,
-  first_order_last_non_direct_click_total_lifetime_value_90d_global_currency,
-  first_order_last_paid_click_total_lifetime_value_90d_local_currency,
-  first_order_last_paid_click_total_lifetime_value_90d_global_currency,
-  first_order_even_click_total_lifetime_value_90d_local_currency,
-  first_order_even_click_total_lifetime_value_90d_global_currency,
-  first_order_time_decay_total_lifetime_value_90d_local_currency,
-  first_order_time_decay_total_lifetime_value_90d_global_currency,
-  first_order_first_click_total_lifetime_value_180d_local_currency,
-  first_order_first_click_total_lifetime_value_180d_global_currency,
-  first_order_first_non_direct_click_total_lifetime_value_180d_local_currency,
-  first_order_first_non_direct_click_total_lifetime_value_180d_global_currency,
-  first_order_last_click_total_lifetime_value_180d_local_currency,
-  first_order_last_click_total_lifetime_value_180d_global_currency,
-  first_order_last_non_direct_click_total_lifetime_value_180d_local_currency,
-  first_order_last_non_direct_click_total_lifetime_value_180d_global_currency,
-  first_order_last_paid_click_total_lifetime_value_180d_local_currency,
-  first_order_last_paid_click_total_lifetime_value_180d_global_currency,
-  first_order_even_click_total_lifetime_value_180d_local_currency,
-  first_order_even_click_total_lifetime_value_180d_global_currency,
-  first_order_time_decay_total_lifetime_value_180d_local_currency,
-  first_order_time_decay_total_lifetime_value_180d_global_currency,
-  first_order_first_click_total_lifetime_value_365d_local_currency,
-  first_order_first_click_total_lifetime_value_365d_global_currency,
-  first_order_first_non_direct_click_total_lifetime_value_365d_local_currency,
-  first_order_first_non_direct_click_total_lifetime_value_365d_global_currency,
-  first_order_last_click_total_lifetime_value_365d_local_currency,
-  first_order_last_click_total_lifetime_value_365d_global_currency,
-  first_order_last_non_direct_click_total_lifetime_value_365d_local_currency,
-  first_order_last_non_direct_click_total_lifetime_value_365d_global_currency,
-  first_order_last_paid_click_total_lifetime_value_365d_local_currency,
-  first_order_last_paid_click_total_lifetime_value_365d_global_currency,
-  first_order_even_click_total_lifetime_value_365d_local_currency,
-  first_order_even_click_total_lifetime_value_365d_global_currency,
-  first_order_time_decay_total_lifetime_value_365d_local_currency,
-  first_order_time_decay_total_lifetime_value_365d_global_currency,
-  repeat_order_first_click_attrib_conversions,
-  repeat_order_first_non_direct_click_attrib_conversions,
-  repeat_order_first_paid_click_attrib_conversions,
-  repeat_order_last_click_attrib_conversions,
-  repeat_order_last_non_direct_click_attrib_conversions,
-  repeat_order_last_paid_click_attrib_conversions,
-  repeat_order_even_click_attrib_conversions,
-  repeat_order_time_decay_attrib_conversions,
-  repeat_order_first_click_attrib_revenue_local_currency,
-  repeat_order_first_click_attrib_revenue_global_currency,
-  repeat_order_first_non_direct_click_attrib_revenue_local_currency,
-  repeat_order_first_non_direct_click_attrib_revenue_global_currency,
-  repeat_order_first_paid_click_attrib_revenue_local_currency,
-  repeat_order_first_paid_click_attrib_revenue_global_currency,
-  repeat_order_last_click_attrib_revenue_local_currency,
-  repeat_order_last_click_attrib_revenue_global_currency,
-  repeat_order_last_non_direct_click_attrib_revenue_local_currency,
-  repeat_order_last_non_direct_click_attrib_revenue_global_currency,
-  repeat_order_last_paid_click_attrib_revenue_local_currency,
-  repeat_order_last_paid_click_attrib_revenue_global_currency,
-  repeat_order_even_click_attrib_revenue_local_currency,
-  repeat_order_even_click_attrib_revenue_global_currency,
-  repeat_order_time_decay_attrib_revenue_local_currency,
-  repeat_order_time_decay_attrib_revenue_global_currency
+  *
 FROM
   final
 

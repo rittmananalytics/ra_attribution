@@ -2,9 +2,9 @@ version: 2
 
 sources:
 
-  - name: custom
-    database: analytics
-    schema: schema: "{{  generate_prefixed_target_name()~"_SEED" if var('attribution_demo_mode') else var('stg_custom_events_schema') }}"
+  - name: custom_currency
+    database: "{{ var('stg_custom_currency_database', target.database) }}"
+    schema: "{{var('stg_custom_currency_schema')}}"
 
     tables:
       - name: currency_rates
