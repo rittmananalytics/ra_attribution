@@ -6,7 +6,7 @@ This dbt package provides a multi-touch, multi-cycle marketing attribution model
 
 The package assumes that orders and user registrations along with customer LTV measures and currency FX rates come from tables replicated from a customer application database, and marketing touchpoints are sourced from Snowplow. Ad Spend data comes via Fivetran from Google Ads, Facebook Ads and Snapchat Ads, as shown in the high-level data flow diagram below.
 
-![](img/image-20220213-224936.png)
+![](img/b1c62f55-1da1-498f-a96f-c640346d2b98.png)
 
 Whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, the target data warehouse platform is assumed to be Snowflake and this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
 
@@ -46,11 +46,11 @@ Credit is also due to Fivetran for their community-released Google Ads, Facebook
 
 #### Overall Package Running in Demo Mode
 
-![](img/image-20220214-001921.png)
+![](img/86657b67-153a-4b24-a80c-ef2d67e924e7.png)
 
 #### Integration and Warehouse Layers
 
-![](img/image-20220214-002146.png)
+![](img/b1c62f55-1da1-498f-a96f-c640346d2b98.png)
 
 ## Supported Attribution Models
 
@@ -80,7 +80,8 @@ The attribution model within this package is a multi-cycle, multi-touch revenue 
 
 Each conversion has its own conversion cycle with the assumption that account openings and first orders occur once at most for each customer, and repeat orders occur zero or more times.
 
-![](img/image-20220208-212618.png)
+![](img/1b8e0612-e9ab-40aa-923b-4d6613c75f6a.png)
+
 
 ## Package Configuration Variables
 
