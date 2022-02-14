@@ -50,7 +50,7 @@ Credit is also due to Fivetran for their community-released Google Ads, Facebook
 
 #### Integration and Warehouse Layers
 
-![](img/b1c62f55-1da1-498f-a96f-c640346d2b98.png)
+![](img/b119c40c-d451-440d-b4b6-007705ec4e73.png)
 
 ## Supported Attribution Models
 
