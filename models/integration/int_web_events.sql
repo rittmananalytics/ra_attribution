@@ -38,6 +38,7 @@ select
   utm_source,
   channel,
   ip,
+  visitor_id,
   user_id,
   device,
   device_category,

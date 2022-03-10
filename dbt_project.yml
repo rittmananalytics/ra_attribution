@@ -1,33 +1,28 @@
 name: 'ra_attribution'
 version: '0.0.3'
 
-require-dbt-version: ">=0.17.0"
+require-dbt-version: [">=1.0.0", "<2.0.0"]
 config-version: 2
 
-profile: 'ra_attribution'
+profile: 'ra_data_warehouse'
+
+target-path: "target"
+clean-targets: ["target", "dbt_modules", "dbt_packages"]
+macro-paths: ["macros"]
+log-path: "logs"
 
 model-paths: ["models"]
 analysis-paths: ["analysis"]
 test-paths: ["tests"]
 seed-paths: ["data"]
-macro-paths: ["macros"]
 
 quoting:
   database: false
   schema: false
   identifier: false
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
-    - "target"
-    - "dbt_modules"
-
 on-run-start:
     - "{% do create_schema(api.Relation.create(database=target.database, schema=target.schema + '_logs')) %}"
-    - "create table if not exists {{ target.schema }}_logs.audit_dbt_results (object string, status string, execution_time numeric, load_ts timestamp)"
-
-on-run-end:
-    - "insert into {{ target.schema }}_logs.audit_dbt_results (object, status, execution_time, load_ts) values {{ results_values(results) }}"
 
 models:
   ra_attribution:
@@ -104,13 +99,16 @@ vars:
 
   attribution_create_account_event_type: user_registration  # event name for registration events
   attribution_conversion_event_type: confirmed_order # event name for order events
-  attribution_global_currency: 'USD' # currency code for global amounts
+  attribution_global_currency: 'GBP' # currency code for global amounts
   attribution_lookback_days_window : 30  # how far back sessions can go to be eligable for attribution
   attribution_time_decay_days_window : 7 # over how many days do we decay the value of conversions for time-decay model
   attribution_include_conversion_session: true # whether the session containing the conversion event is within scope for attribution
   attribution_match_offline_conversions_to_sessions: true # whether orders and registrations are matched to Snowplow sessions or not
   attribution_max_session_hours: 24 # maximum length of a session in hours to be considered for matching purposes
   attribution_demo_mode: true # set to 'true' to source events, orders and other custom app data from seed files, 'false' to source from database
+
+  web_sessionization_trailing_window: 3
+  web_inactivity_cutoff: 30 * 60
 
   attribution_models: ['first_click_attrib','first_non_direct_click_attrib','first_paid_click_attrib','last_click_attrib',
                       'last_non_direct_click_attrib','last_paid_click_attrib','even_click_attrib','time_decay_attrib'] # list of model names to be appended to measures
