@@ -42,7 +42,7 @@ with
       cast(user_id as {{ dbt_utils.type_string() }}) as visitor_id,
     	cast(user_id as {{ dbt_utils.type_string() }}) as user_id,
     	cast(null as {{ dbt_utils.type_string() }}) as device ,
-      'CUSTOM' as site,
+      'CUSTOM_OFFLINE' as site,
       cast(null as {{ dbt_utils.type_string() }}) as DEVICE_CATEGORY
     from
       customers c

@@ -19,7 +19,7 @@ with
     select
       cast(event_id as {{ dbt_utils.type_string() }}) as event_id,
       cast(domain_session_id as {{ dbt_utils.type_string() }}) as session_id,
-      'Snowplow' as session_type,
+      'SNOWPLOW_GENERATED' as session_type,
       cast(event as {{ dbt_utils.type_string() }}) as event_type,
       event_time as event_ts,
       cast(page_title as {{ dbt_utils.type_string() }}) as event_details,
@@ -90,7 +90,7 @@ with
       end as channel,
       cast(user_ipaddress as {{ dbt_utils.type_string() }}) as ip,
       cast(user_id as {{ dbt_utils.type_string() }}) as visitor_id,
-      
+
       cast(user_id as {{ dbt_utils.type_string() }}) as user_id,
       case
         when lower(useragent) like '%android%'
