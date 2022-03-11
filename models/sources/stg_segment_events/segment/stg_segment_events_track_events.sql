@@ -43,21 +43,7 @@ renamed AS (
               {{ dbt_utils.split_part('context_user_agent',"'('",1) }},
                 ';', '')
         end  AS device,
-        CAST('{{ var('stg_segment_events_site') }}' AS {{ dbt_utils.type_string() }})  AS site,
-        CAST(null as {{ dbt_utils.type_string() }})                                   AS session_seq,
-        CAST(null as {{ dbt_utils.type_string() }})                                   AS session_id,
-        'Segment'                                     AS source,
-        'web'                                                               AS platform,
-        CAST(null as {{ dbt_utils.type_string() }})                         AS ip_country,
-        CAST(null as {{ dbt_utils.type_string() }})                         AS ip_region,
-        CAST(null as {{ dbt_utils.type_string() }}) 	                      AS ip_city,
-        CAST(null as {{ dbt_utils.type_string() }}) 	                      AS ip_zipcode,
-        CAST(null as {{ dbt_utils.type_float() }})                          AS ip_latitude,
-        CAST(null as {{ dbt_utils.type_float() }}) 	                        AS ip_longitude,
-        CAST(null as {{ dbt_utils.type_string() }}) 	                      AS ip_region_name,
-        CAST(null as {{ dbt_utils.type_string() }}) 	                      AS ip_isp,
-        CAST(null as {{ dbt_utils.type_string() }}) 	                      AS ip_organization,
-        CAST(null as {{ dbt_utils.type_string() }})                         AS ip_domain
+        CAST('{{ var('stg_segment_events_site') }}' AS {{ dbt_utils.type_string() }})  AS site
     FROM source
     where event != 'order_checkout'
 
