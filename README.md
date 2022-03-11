@@ -6,7 +6,7 @@ This dbt package provides a multi-touch, multi-cycle marketing attribution model
 
 The package assumes that orders and user registrations along with customer LTV measures and currency FX rates come from tables replicated from a customer application database, and marketing touchpoints are sourced from Snowplow, Segment, Rudderstack, Heap and/or GA4. Ad Spend data comes via Fivetran from Google Ads, Facebook Ads and Snapchat Ads, as shown in the high-level data flow diagram below.
 
-![](img/b1c62f55-1da1-498f-a96f-c640346d2b98.png)
+![](img/solution_architecture.png)
 
 Whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, the target data warehouse platform is assumed to be Snowflake and this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
 
