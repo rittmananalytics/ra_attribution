@@ -4,7 +4,7 @@ This dbt package provides a multi-touch, multi-cycle marketing attribution model
 
 ## Supported Data Sources and Warehouse Target
 
-The package assumes that orders and user registrations along with customer LTV measures and currency FX rates come from tables replicated from a customer application database, and marketing touchpoints are sourced from Snowplow. Ad Spend data comes via Fivetran from Google Ads, Facebook Ads and Snapchat Ads, as shown in the high-level data flow diagram below.
+The package assumes that orders and user registrations along with customer LTV measures and currency FX rates come from tables replicated from a customer application database, and marketing touchpoints are sourced from Snowplow, Segment, Rudderstack, Heap and/or GA4. Ad Spend data comes via Fivetran from Google Ads, Facebook Ads and Snapchat Ads, as shown in the high-level data flow diagram below.
 
 ![](img/b1c62f55-1da1-498f-a96f-c640346d2b98.png)
 
@@ -24,7 +24,7 @@ Credit is also due to Fivetran for their community-released Google Ads, Facebook
 
 *   Fivetran for Google Ads, Facebook Ads and Snapchat Ads API replication
 
-*   Snowplow
+*   One or more of either Snowplow, Google Analytics 4, Heap, Segment or Rudderstack
 
 *   Orders, Order Lines, User, Currency Rates and Customer LTV table extracts from your custom app database
 
@@ -118,32 +118,6 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Measures | attribution\_input\_measures | _see dbt\_project.yml_ | list of attribution input measures |
 | Measures | attribution\_output\_conversion\_measures | _see dbt\_project.yml_ | list of attribution output conversion measures |
 | Measures | attribution\_output\_revenue\_measures | _see dbt\_project.yml_ | list of attribution output revenue measures |
-
-## Matching Orders and User Registrations to Snowplow Sessions
-
-In order to use first and repeat orders + user registrations as the conversion events that we then attribute across sessions, we create our own “confirmed order” events from the transactions and “user registration” events from customer records in the custom application database tables extract.
-
-### Matching Orders and User Registration Events to Snowplow Sessions
-
-As these confirmed\_order and user\_registration events will not have Snowplow domain\_session\_ids, we attempt to match these events to existing Snowplow-derived sessions using the following rules:
-
-1.  We first aggregate all of the Snowplow events that contain a domain\_session\_id value to give us the starting timestamp, ending timestamp and domain\_session\_id for each Snowplow session
-
-2.  We then add up to 30 minutes to the end of each of those Snowplow-derived sessions, up to the timestamp of the next session for the same user
-
-3.  Then we attempt to match each order and user registration event to one of the Snowplow-derived sessions, with the additional (up to) 30 minutes allowing for the fact that the user may have visited a checkout page but not completed the checkout until up to 30 minutes later (the generally accepted length of a user session)
-
-    1.  Each session has its length in hours calculated, and only sessions that are <=24 hours in length are considered for matching orders and accounts openings to; as before, any orders/new accounts not so matched will be assigned their own session
-
-    2.  Two variables in the dbt\_project.yml file control the matching of orders/new accounts to Snowplow sessions:
-
-        `attribution_match_offline_conversions_to_sessions` (default value - true) controls whether new accounts/orders are matched with existing Snowplow sessions; if this variable is set to false then no matching takes place whatsoever
-
-        `attribution_max_session_hours` (default value: 24) determines the maximum length in hours that a session can run for in order to be eligible for matching to order or new account events
-
-4.  If we find a match, the session\_id and session\_type (“Snowplow”) of the matching Snowplow session is used for those values for the order or user registration event
-
-5.  If we don’t find a match, then we use `md5(concat(event_id, user_id)))` for the session\_id for the `confirmed_order` or `user_registration event`, and set the session\_type to "dbt Generated"
 
 
 ## Glossary
