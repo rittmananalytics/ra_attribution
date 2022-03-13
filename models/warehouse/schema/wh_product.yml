@@ -56,8 +56,8 @@ models:
       Every combination of attribution model and conversion type is pre-calculated for each session in the table, with Looker then displaying the one relevant to the user's query using parameters and liquid templating/variables.
 
     columns:
-      - name: user_id
-        description: The custom user ID for each user, already identity-stitched using the user's logged-in and unauthenticated sessions.
+      - name: blended_user_id
+        description: The custom user ID for each user, identity-stitched using the user's logged-in and unauthenticated sessions.
       - name: session_start_ts
       - name: session_end_ts
       - name: session_id
@@ -165,6 +165,18 @@ models:
       - name: first_order_even_click_attrib_conversions
         description: Number of first order conversions using the Even Click attribution model.
       - name: first_order_first_click_attrib_revenue
+        meta:
+          dimension:
+            label: "First Order Even Click Revenue"
+            type: number
+            hidden: no
+          metrics:
+            total_first_order_even_click_revenue_global_currency:
+              type: sum
+              label: "Total First Order Even Click Revenue"
+            avg_first_order_even_click_revenue_global_currency:
+              type: average
+              label: "Average First Order Even Click Revenue"
       - name: first_order_first_non_direct_click_attrib_revenue
       - name: first_order_first_paid_click_attrib_revenue
       - name: first_order_last_click_attrib_revenue
