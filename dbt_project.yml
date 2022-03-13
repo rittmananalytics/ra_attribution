@@ -158,7 +158,6 @@ vars:
   stg_snowplow_events_snowplow_database: RA_DATA_WAREHOUSE_DEV
   snowplow_max_users_per_session: 10
   stg_appsflyer_events_stitch_schema: stitch_appsflyer
-  stg_ga4_events_export_schema: events_277223877
   stg_segment_events_segment_database: RA_DATA_WAREHOUSE_DEV
   stg_segment_events_segment_schema: SEGMENT_EVENTS
   stg_rudderstack_events_rudderstack_database: RA_DATA_WAREHOUSE_DEV
