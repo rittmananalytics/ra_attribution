@@ -168,19 +168,20 @@ models:
             label: "Total First Non-Direct Click User Registrations"
             type: number
             hidden: no
-
       - name: user_registration_last_click_attrib_conversions
         description: Number of account opening conversions using the Last Click attribution model.
-        dimension:
-          label: "Total Last Click User Registrations"
-          type: number
-          hidden: no
+        meta:
+          dimension:
+            label: "Total Last Click User Registrations"
+            type: number
+            hidden: no
       - name: user_registration_last_non_direct_click_attrib_conversions
         description: Number of account opening conversions using the Last Non-Direct Click attribution model.
-        dimension:
-          label: "Total Last Non-Direct Click User Registrations"
-          type: number
-          hidden: no
+        meta:
+          dimension:
+            label: "Total Last Non-Direct Click User Registrations"
+            type: number
+            hidden: no
       - name: user_registration_last_paid_click_attrib_conversions
         description: Number of account opening conversions using the Last Paid Click attribution model.
         meta:
