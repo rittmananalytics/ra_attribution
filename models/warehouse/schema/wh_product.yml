@@ -249,7 +249,7 @@ models:
           metrics:
             total_first_click_orders:
               type: sum
-              label: "First Click Orders"
+              label: "First Click First Orders"
       - name: first_order_first_non_direct_click_attrib_conversions
         description: Number of first order conversions using the First Non-Direct Click attribution model.
         meta:
@@ -260,77 +260,121 @@ models:
           metrics:
             total_first_click_orders:
               type: sum
-              label: "First Non-Direct Click Orders"
+              label: "First Non-Direct Click First Orders"
       - name: first_order_first_paid_click_attrib_conversions
         description: Number of first order conversions using the First Paid Click attribution model.
         meta:
           dimension:
             label: "Total First Paid Click First Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_paid_click_orders:
+              type: sum
+              label: "First Paid Click First Orders"
       - name: first_order_last_click_attrib_conversions
         description: Number of first order conversions using the Last Click attribution model.
         meta:
           dimension:
             label: "Total Last Click Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_click_orders:
+              type: sum
+              label: "Last Click First Orders"
       - name: first_order_last_non_direct_click_attrib_conversions
         description: Number of first order conversions using the Last Non-Direct Click attribution model.
         meta:
           dimension:
             label: "Total Last Non-Direct Click First Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_non_direct_click_orders:
+              type: sum
+              label: "Last Non-Direct Click First Orders"
       - name: first_order_even_click_attrib_conversions
         description: Number of first order conversions using the Even Click attribution model.
         meta:
           dimension:
             label: "Total Even Click First Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_even_click_orders:
+              type: sum
+              label: "Last Even Click First Orders"
       - name: first_order_first_click_attrib_revenue
         meta:
           dimension:
-            label: "Total Even Click First Order Revenue"
+            label: "Total First Click First Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_click_order_revenue:
+              type: sum
+              label: "First Click First Order Revenue"
       - name: first_order_first_non_direct_click_attrib_revenue
         meta:
           dimension:
             label: "Total First Non-Direct Click First Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_non_direct_click_order_revenue:
+              type: sum
+              label: "First Non-Direct Click First Order Revenue"
       - name: first_order_first_paid_click_attrib_revenue
         meta:
           dimension:
             label: "Total First Paid Click First Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_paid_click_first_order_revenue:
+              type: sum
+              label: "First Paid Click First Order Revenue"
       - name: first_order_last_click_attrib_revenue
         meta:
           dimension:
             label: "Total Last Click First Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_click_first_order_revenue:
+              type: sum
+              label: "Last Last Click First Order Revenue"
       - name: first_order_last_non_direct_click_attrib_revenue
         meta:
           dimension:
             label: "Total Last Non-Direct Click First Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_non_direct_click_first_order_revenue:
+              type: sum
+              label: "Last Non-Direct Click First Order Revenue"
       - name: first_order_last_paid_click_attrib_revenue
         meta:
           dimension:
             label: "Total Last Paid Click First Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_paid_click_first_order_revenue:
+              type: sum
+              label: "Last Paid Click First Order Revenue"
       - name: first_order_even_click_attrib_revenue
         meta:
           dimension:
             label: "Total Even Click First Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_even_click_first_order_revenue:
+              type: sum
+              label: "Even Click First Order Revenue"
       - name: repeat_order_first_click_attrib_conversions
         meta:
           dimension:
