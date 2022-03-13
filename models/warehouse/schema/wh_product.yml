@@ -150,7 +150,7 @@ models:
           metrics:
             total_unit_amount:
               type: sum
-              label: "Total Repeat Orders"
+              label: "Repeat Orders"
       - name: count_registration_conversions
         description: Total count of account opening conversion events within the session.
         meta:
@@ -161,7 +161,7 @@ models:
           metrics:
             total_user_registrations:
               type: sum
-              label: "Total User Registrations"
+              label: "User Registrations"
       - name: user_registration_first_click_attrib_conversions
         description: Number of account opening conversions using the First Click Decay attribution model.
         meta:
@@ -172,7 +172,7 @@ models:
           metrics:
             total_first_click_user_registrations:
               type: sum
-              label: "Total First Click User Registrations"
+              label: "First Click User Registrations"
       - name: user_registration_first_non_direct_click_attrib_conversions
         description: Number of account opening conversions using the First Non-Direct Click attribution model.
         meta:
@@ -183,7 +183,7 @@ models:
           metrics:
             total_first_non_direct_click_user_registrations:
               type: sum
-              label: "Total First Non-Direct Click User Registrations"
+              label: "First Non-Direct Click User Registrations"
       - name: user_registration_last_click_attrib_conversions
         description: Number of account opening conversions using the Last Click attribution model.
         meta:
@@ -194,7 +194,7 @@ models:
           metrics:
             total_last_click_user_registrations:
               type: sum
-              label: "Total Last Click User Registrations"
+              label: "Last Click User Registrations"
       - name: user_registration_last_non_direct_click_attrib_conversions
         description: Number of account opening conversions using the Last Non-Direct Click attribution model.
         meta:
@@ -205,29 +205,29 @@ models:
           metrics:
             total_last_non_direct_click_user_registrations:
               type: sum
-              label: "Total Last Non-Direct Click User Registrations"
+              label: "Last Non-Direct Click User Registrations"
       - name: user_registration_last_paid_click_attrib_conversions
         description: Number of account opening conversions using the Last Paid Click attribution model.
         meta:
           dimension:
-            label: "Total Last Paid Click User Registrations"
+            label: "Last Paid Click User Registrations"
             type: number
             hidden: yes
           metrics:
             total_last_paid_click_user_registrations:
               type: sum
-              label: "Total Last Paid Click User Registrations"
+              label: "Last Paid Click User Registrations"
       - name: user_registration_even_click_attrib_conversions
         description: Number of account opening conversions using the Even Click attribution model.
         meta:
           dimension:
-            label: "Total Even Click User Registrations"
+            label: "Even Click User Registrations"
             type: number
             hidden: yes
           metrics:
             total_even_click_user_registrations:
               type: sum
-              label: "Total Even Click User Registrations"
+              label: "Even Click User Registrations"
       - name: user_registration_time_decay_attrib_conversions
         description: Number of account opening conversions using the Time Decay attribution model.
         meta:
@@ -235,6 +235,10 @@ models:
             label: "Total Time Decay User Registrations"
             type: number
             hidden: yes
+          metrics:
+            total_time_decay_user_registrations:
+              type: sum
+              label: "Time Decay User Registrations"
       - name: first_order_first_click_attrib_conversions
         description: Number of first order conversions using the First Click attribution model.
         meta:
@@ -242,13 +246,21 @@ models:
             label: "Total First Click First Orders"
             type: number
             hidden: yes
+          metrics:
+            total_first_click_orders:
+              type: sum
+              label: "First Click Orders"
       - name: first_order_first_non_direct_click_attrib_conversions
         description: Number of first order conversions using the First Non-Direct Click attribution model.
         meta:
           dimension:
             label: "Total First Non-Direct Click First Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_click_orders:
+              type: sum
+              label: "First Non-Direct Click Orders"
       - name: first_order_first_paid_click_attrib_conversions
         description: Number of first order conversions using the First Paid Click attribution model.
         meta:
