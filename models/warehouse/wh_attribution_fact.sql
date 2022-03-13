@@ -10,27 +10,27 @@
 
 {% set partition_by = "partition by session_id" %}
 
-{% set user_cycle_partition_by = "partition by user_id, user_conversion_cycle" %}
+{% set user_cycle_partition_by = "partition by blended_user_id, user_conversion_cycle" %}
 
 {% set user_window_clause = "
-    partition by user_id
+    partition by blended_user_id
     order by session_start_ts
     rows between unbounded preceding and unbounded following
     " %}
 
 {% set user_event_window_clause = "
-    partition by user_id
+    partition by blended_user_id
     order by event_ts
     rows between unbounded preceding and unbounded following
     " %}
 
 {% set user_conversion_cycle_clause = "
-    partition by user_id, user_conversion_cycle
+    partition by blended_user_id, user_conversion_cycle
     order by session_start_ts
     " %}
 
 {% set user_session_window_clause = "
-    partition by user_id
+    partition by blended_user_id
     order by session_start_ts
     rows between unbounded preceding and current row
         " %}
@@ -91,7 +91,7 @@ events_filtered as
   converting_events as
     (
     select
-      e.user_id,
+      e.blended_user_id,
       session_id,
       event_type,
       order_id,
@@ -118,7 +118,7 @@ events_filtered as
     left join
       user_ltvs l
     on
-      e.user_id = l.user_id
+      e.blended_user_id = l.user_id
   ),
 
   /* Now we aggregate those events into sessions (and per-user sub sessions, see above note about web_session_pk), with session_id sourced from either the Snowplow session_id (domain_session_id)
@@ -129,7 +129,7 @@ converting_sessions_deduped as
   (
   select
     session_id as session_id,
-    max(user_id) as user_id,
+    max(blended_user_id) as blended_user_id,
 
  /* note that because a session could in-theory contain account opening, first order and multiple repeat order events (conversions) within the same session, we have to aggregate the
  value of those conversions when working at the session level */
@@ -168,14 +168,14 @@ converting_sessions_deduped as
           select
             *,
             first_value(converted_ts ignore nulls)
-              over (partition by user_id order by session_start_ts rows between current row and unbounded following)
+              over (partition by blended_user_id order by session_start_ts rows between current row and unbounded following)
             as conversion_cycle_conversion_ts, -- used later on to calculate days to conversion
             row_number()
-              over (partition by user_id order by session_start_ts)
+              over (partition by blended_user_id order by session_start_ts)
             as session_seq
           FROM (
             SELECT
-              s.user_id as user_id,
+              s.blended_user_id as blended_user_id,
               s.web_session_pk as web_session_pk,
               s.session_start_ts as session_start_ts,
               s.session_end_ts as session_end_ts,
@@ -224,7 +224,7 @@ converting_sessions_deduped as
             left join
               user_ltvs l
             on
-              s.user_id = l.user_id
+              s.blended_user_id = l.user_id
             group by
               1,2,3,4,5,6,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46
         )
@@ -297,9 +297,9 @@ days_to_each_conversion as
 (
   select
     *,
-    session_day_number - max(session_day_number) over (partition by user_id, user_conversion_cycle)  as days_before_conversion,
-    (session_day_number - max(session_day_number) over (partition by user_id, user_conversion_cycle))*-1 <= {{ var('attribution_lookback_days_window') }} as is_within_attribution_lookback_window,
-    (session_day_number - max(session_day_number) over (partition by user_id, user_conversion_cycle))*-1 <= {{ var('attribution_time_decay_days_window') }} as is_within_attribution_time_decay_days_window
+    session_day_number - max(session_day_number) over (partition by blended_user_id, user_conversion_cycle)  as days_before_conversion,
+    (session_day_number - max(session_day_number) over (partition by blended_user_id, user_conversion_cycle))*-1 <= {{ var('attribution_lookback_days_window') }} as is_within_attribution_lookback_window,
+    (session_day_number - max(session_day_number) over (partition by blended_user_id, user_conversion_cycle))*-1 <= {{ var('attribution_time_decay_days_window') }} as is_within_attribution_time_decay_days_window
   from
     touchpoint_and_converting_sessions_labelled_with_conversion_number_and_conversion_cycles_and_day_number
 ),
@@ -313,8 +313,8 @@ add_time_decay_score as (
     *,
     {{ iff() }} (is_within_attribution_time_decay_days_window,{{ safe_divide('pow(2,days_before_conversion-1)',var('attribution_time_decay_days_window')  ) }} ,null) as time_decay_score,
     {{ iff() }} (conversion_session and not true,0,pow(2, (days_before_conversion - 1))) as weighting,
-    {{ iff() }} (conversion_session and not true,0,(count(case when not conversion_session or true then web_session_pk end) over (partition by user_id,date_trunc('day', cast(session_start_ts as date))))) as sessions_within_day_to_conversion,
-    {{ iff() }} (conversion_session and not true,0,div0 (pow(2, (days_before_conversion - 1)), count(case when not conversion_session or true then web_session_pk end) over (partition by user_id, date_trunc('day', cast(session_start_ts as date))))) as weighting_split_by_days_sessions
+    {{ iff() }} (conversion_session and not true,0,(count(case when not conversion_session or true then web_session_pk end) over (partition by blended_user_id,date_trunc('day', cast(session_start_ts as date))))) as sessions_within_day_to_conversion,
+    {{ iff() }} (conversion_session and not true,0,div0 (pow(2, (days_before_conversion - 1)), count(case when not conversion_session or true then web_session_pk end) over (partition by blended_user_id, date_trunc('day', cast(session_start_ts as date))))) as weighting_split_by_days_sessions
   from
     days_to_each_conversion
 ),
@@ -366,7 +366,7 @@ session_attrib_pct as (
 
     {{ iff() }}(conversion_session and not {{ var('attribution_include_conversion_session') }},0,
       case
-        when web_session_pk = last_value({{ iff() }}(is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}),web_session_pk,null)  ignore nulls) over (partition by user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following) then 1
+        when web_session_pk = last_value({{ iff() }}(is_within_attribution_lookback_window and (not conversion_session or {{ var('attribution_include_conversion_session') }}),web_session_pk,null)  ignore nulls) over (partition by blended_user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following) then 1
         else 0
       end)
     as last_click_attrib_pct,
@@ -375,7 +375,7 @@ session_attrib_pct as (
       case
         when is_last_non_direct_channel_in_conversion_cycle then 1 -- if the session is the last qualifying session in the conversion cycle, i.e. last non-direct session, then allocate 100% of conversion to it
         when {{ iff() }}(not is_conversion_cycle_with_non_direct
-          and web_session_pk = last_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
+          and web_session_pk = last_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by blended_user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
           then 1 -- else if there are no non-direct channel sessions in the conversion cycle AND this the last session in that conversion cycle, allocate 100% of the conversion to it
         else 0 -- else allocate 0%
       end)
@@ -385,7 +385,7 @@ session_attrib_pct as (
       case
         when is_last_paid_channel_in_conversion_cycle then 1 -- if the session is the last qualifying session in the conversion cycle, i.e. last paid session, then allocate 100% of conversion to it
         when {{ iff() }}(not is_conversion_cycle_with_paid
-          and web_session_pk = last_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
+          and web_session_pk = last_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by blended_user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
           then 1 -- else if there are no paid channel sessions in the conversion cycle AND this the last session in that conversion cycle, allocate 100% of the conversion to it
         else 0 -- else allocate 0%
       end)
@@ -393,7 +393,7 @@ session_attrib_pct as (
 
     {{ iff() }}(conversion_session and not {{ var('attribution_include_conversion_session') }},0,
       case
-        when web_session_pk = first_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following) then 1
+        when web_session_pk = first_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by blended_user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following) then 1
         else 0
       end)
     as first_click_attrib_pct,
@@ -402,7 +402,7 @@ session_attrib_pct as (
       case
         when is_first_non_direct_channel_in_conversion_cycle then 1 -- if the session is the first qualifying session in the conversion cycle, i.e. first non-direct session, then allocate 100% of conversion to it
         when {{ iff() }}(not is_conversion_cycle_with_non_direct
-          and web_session_pk = first_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
+          and web_session_pk = first_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by blended_user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
           then 1 -- else if there are no non-direct channel sessions in the conversion cycle AND this the first session in that conversion cycle, allocate 100% of the conversion to it
         else 0 -- else allocate 0%
       end)
@@ -412,17 +412,17 @@ session_attrib_pct as (
       case
         when is_first_paid_channel_in_conversion_cycle then 1 -- if the session is the first qualifying session in the conversion cycle, i.e. first paid session, then allocate 100% of conversion to it
         when {{ iff() }}(not is_conversion_cycle_with_paid
-          and web_session_pk = first_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
+          and web_session_pk = first_value({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null) ignore nulls) over (partition by blended_user_id, user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following),true,false) = true
           then 1 -- else if there are no paid channel sessions in the conversion cycle AND this the first session in that conversion cycle, allocate 100% of the conversion to it
         else 0 -- else allocate 0%
       end)
     as first_paid_click_attrib_pct,
 
     {{ iff() }} (conversion_session and not true,0,
-      {{ iff() }} (is_within_attribution_lookback_window,(div0 (1,(count({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null)) over (partition by user_id,user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following) + 0))),0)
+      {{ iff() }} (is_within_attribution_lookback_window,(div0 (1,(count({{ iff() }}(is_within_attribution_lookback_window,web_session_pk,null)) over (partition by blended_user_id,user_conversion_cycle order by session_start_ts rows between unbounded preceding and unbounded following) + 0))),0)
       ) as even_click_attrib_pct,
 
-    {{ iff() }} (conversion_session and not true,0,case when is_within_attribution_time_decay_days_window then apportioned_time_decay_score / nullif((sum(apportioned_time_decay_score) over (partition by user_id, user_conversion_cycle)),0) end
+    {{ iff() }} (conversion_session and not true,0,case when is_within_attribution_time_decay_days_window then apportioned_time_decay_score / nullif((sum(apportioned_time_decay_score) over (partition by blended_user_id, user_conversion_cycle)),0) end
       ) as time_decay_attrib_pct
 
   from

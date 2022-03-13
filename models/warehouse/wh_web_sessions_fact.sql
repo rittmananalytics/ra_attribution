@@ -36,7 +36,7 @@ with sessions as
         duration_in_s,
         duration_in_s_tier,
         channel,
-        user_id,
+        blended_user_id,
         sum(mins_between_sessions) over (partition by session_id) as mins_between_sessions,
         is_bounced_session
       FROM

@@ -43,7 +43,11 @@ renamed AS (
               {{ dbt_utils.split_part('context_user_agent',"'('",1) }},
                 ';', '')
         end  AS device,
-        '{{ var('stg_segment_events_site') }}'  AS site
+        '{{ var('stg_segment_events_site') }}'  AS site,
+        cast(null as {{ dbt_utils.type_string() }}) as order_id, -- amend this line and the following three more as appropriate
+        cast(null as {{ dbt_utils.type_string() }}) as local_currency,
+        cast(null as {{ dbt_utils.type_numeric() }}) as revenue_global_currency,
+        cast(null as {{ dbt_utils.type_numeric() }}) as revenue_local_currency
     FROM source
 
 )

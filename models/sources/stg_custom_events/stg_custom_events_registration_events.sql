@@ -42,8 +42,12 @@ with
       cast(user_id as {{ dbt_utils.type_string() }}) as visitor_id,
     	cast(user_id as {{ dbt_utils.type_string() }}) as user_id,
     	cast(null as {{ dbt_utils.type_string() }}) as device ,
-      'CUSTOM_OFFLINE' as site,
-      cast(null as {{ dbt_utils.type_string() }}) as DEVICE_CATEGORY
+      concat(CAST('{{ var('stg_custom_events_site') }}' AS {{ dbt_utils.type_string() }}),'/Custom') as site,
+      cast(null as {{ dbt_utils.type_string() }}) as DEVICE_CATEGORY,
+      cast(null as {{ dbt_utils.type_string() }}) as order_id,
+      cast(null as {{ dbt_utils.type_string() }}) as local_currency,
+      cast(null as {{ dbt_utils.type_numeric() }}) as revenue_global_currency,
+      cast(null as {{ dbt_utils.type_numeric() }}) as revenue_local_currency
     from
       customers c
   )

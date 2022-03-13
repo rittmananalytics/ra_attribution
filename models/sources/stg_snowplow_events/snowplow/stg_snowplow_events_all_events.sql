@@ -98,7 +98,11 @@ with
           else replace({{ dbt_utils.split_part("useragent","'('","1") }},
             ';', '')
           end as device,
-      cast(page_url_host as {{ dbt_utils.type_string() }}) as site
+      concat(CAST('{{ var('stg_snowplow_events_site') }}' AS {{ dbt_utils.type_string() }}),'/Snowplow')  AS site,
+      cast(null as {{ dbt_utils.type_string() }}) as order_id, -- amend this line and the following three more as appropriate
+      cast(null as {{ dbt_utils.type_string() }}) as local_currency,
+      cast(null as {{ dbt_utils.type_numeric() }}) as revenue_global_currency,
+      cast(null as {{ dbt_utils.type_numeric() }}) as revenue_local_currency
     from
       events),
   final as (

@@ -1,7 +1,9 @@
+{{ config(severity = 'warn') }}
+
 WITH
   numbers AS (
   SELECT
-    blendeuser_id,
+    blended_user_id,
     SUM(count_conversions) AS count_conversions,
     SUM( count_order_conversions) AS count_order_conversions,
     SUM(count_first_order_conversions) count_first_order_conversions,
@@ -56,7 +58,7 @@ WITH
     SUM(repeat_order_even_click_attrib_revenue) repeat_order_even_click_attrib_revenue,
     SUM(repeat_order_time_decay_attrib_revenue) repeat_order_time_decay_attrib_revenue
   FROM
-    {{ ref('attribution_fact') }}
+    {{ ref('wh_attribution_fact') }}
   GROUP BY
     1),
   totals AS (

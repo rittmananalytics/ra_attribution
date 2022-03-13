@@ -46,14 +46,10 @@ select
   session_id,
   session_type,
   site,
-  case when event_type = '{{ var('attribution_conversion_event_type') }}'
-    then cast(event_id as varchar) end as order_id,
-  case when event_type = '{{ var('attribution_conversion_event_type') }}'
-      then cast(revenue_global_currency as varchar) end as total_revenue_global_currency,
-  case when event_type = '{{ var('attribution_conversion_event_type') }}'
-      then cast(revenue_local_currency as varchar) end as total_revenue_local_currency,
-  case when event_type = '{{ var('attribution_conversion_event_type') }}'
-      then cast(local_currency as varchar) end as local_currency
+  order_id,
+  revenue_global_currency as total_revenue_global_currency,
+  revenue_local_currency as total_revenue_local_currency,
+  local_currency
 from events_merge_list e)
 ,
 id_stitching as (

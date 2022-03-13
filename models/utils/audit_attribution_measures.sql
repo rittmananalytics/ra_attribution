@@ -75,6 +75,36 @@ source_snowplow_sessions as (
   group by
     1
 ),
+source_segment_sessions as (
+  select
+    {{ dbt_utils.date_trunc('MONTH','event_time')}} as months,
+    count(distinct domain_session_id) as source_snowplow_sessions
+  from
+      {% if var("attribution_demo_mode")  %}
+        {{ ref("events") }}
+      {% else %}
+        {{ source('snowplow', 'events') }}
+      {% endif %}
+  where
+    domain_session_id is not null
+  group by
+    1
+),
+source_snowplow_sessions as (
+  select
+    {{ dbt_utils.date_trunc('MONTH','event_time')}} as months,
+    count(distinct domain_session_id) as source_snowplow_sessions
+  from
+      {% if var("attribution_demo_mode")  %}
+        {{ ref("events") }}
+      {% else %}
+        {{ source('snowplow', 'events') }}
+      {% endif %}
+  where
+    domain_session_id is not null
+  group by
+    1
+),
 source_google_ad_measures as (
   select
     {{ dbt_utils.date_trunc('MONTH','to_date(date)')}} as months,

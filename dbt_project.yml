@@ -92,7 +92,7 @@ vars:
   attribution_warehouse_click_id_sources: ['google_ads']
   attribution_warehouse_currency_rate_sources: ['custom_currency_rates']
 
-  attribution_warehouse_event_sources: ['custom_events_order','custom_events_registration','snowplow_events_all']
+  attribution_warehouse_event_sources: ['custom_events_order','custom_events_registration','snowplow_events_all','segment_events_page','segment_events_track','rudderstack_events_page','rudderstack_events_track']
   attribution_warehouse_ltv_sources: ['custom_ltv_customer']
 
   # various configuration variables used throughout the package
@@ -151,11 +151,30 @@ vars:
   stg_custom_currency_database: RA_DATA_WAREHOUSE_DEV
 
   # Data source settings -
-  # Snowplow event source
+  # Snowplow, Segment, Rudderstack and GA4 event source
 
   stg_snowplow_events_snowplow_schema: SNOWPLOW
   stg_snowplow_events_snowplow_database: RA_DATA_WAREHOUSE_DEV
   snowplow_max_users_per_session: 10
+  stg_appsflyer_events_stitch_schema: stitch_appsflyer
+  stg_ga4_events_export_schema: events_277223877
+  stg_segment_events_segment_database: RA_DATA_WAREHOUSE_DEV
+  stg_segment_events_segment_schema: SEGMENT_EVENTS
+  stg_rudderstack_events_rudderstack_database: RA_DATA_WAREHOUSE_DEV
+  stg_rudderstack_events_rudderstack_schema: RUDDERSTACK_RA_WEBSITE
+  stg_heap_events_heap_schema: HEAP_EVENTS
+  stg_heap_events_heap_database: RA_DATA_WAREHOUSE_DEV
+  stg_ga4_events_export_schema: GA4_EVENTS
+  stg_ga4_events_export_database: RA_DATA_WAREHOUSE_DEV
+
+
+  stg_segment_events_site: rittmananalytics.com
+  stg_rudderstack_events_site: rittmananalytics.com
+  stg_snowplow_events_site: rittmananalytics.com
+  stg_custom_events_site: rittmananalytics.com
+
+
+  enable_event_type_mapping: true
 
   # Data source settings -
   # Fivetran Ad Reporting package sources

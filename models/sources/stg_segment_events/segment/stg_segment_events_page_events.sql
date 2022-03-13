@@ -1,6 +1,7 @@
 {% if target.type == 'bigquery' or target.type == 'snowflake' or target.type == 'redshift' %}
-{% if var("product_warehouse_event_sources") %}
-{% if 'segment_events_page' in var("product_warehouse_event_sources") %}
+{% if var("attribution_warehouse_event_sources") %}
+{% if 'segment_events_page' in var("attribution_warehouse_event_sources") %}
+
 
 with source AS (
 
@@ -42,7 +43,11 @@ renamed AS (
               {{ dbt_utils.split_part('context_user_agent',"'('",1) }},
                 ';', '')
         end  AS device,
-        CAST('{{ var('stg_segment_events_site') }}' AS {{ dbt_utils.type_string() }})  AS site
+        concat(CAST('{{ var('stg_segment_events_site') }}' AS {{ dbt_utils.type_string() }}),'/Segment')  AS site,
+        cast(null as {{ dbt_utils.type_string() }}) as order_id,
+        cast(null as {{ dbt_utils.type_string() }}) as local_currency,
+        cast(null as {{ dbt_utils.type_numeric() }}) as revenue_global_currency,
+        cast(null as {{ dbt_utils.type_numeric() }}) as revenue_local_currency
 
 
     FROM source

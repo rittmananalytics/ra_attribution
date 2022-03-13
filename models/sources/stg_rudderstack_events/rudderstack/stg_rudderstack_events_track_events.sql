@@ -1,6 +1,6 @@
 {% if target.type == 'bigquery' or target.type == 'snowflake' or target.type == 'redshift' %}
-{% if var("product_warehouse_event_sources") %}
-{% if 'rudderstack_events_track' in var("product_warehouse_event_sources") %}
+{% if var("attribution_warehouse_event_sources") %}
+{% if 'rudderstack_events_track' in var("attribution_warehouse_event_sources") %}
 
 {{
     config(
@@ -47,7 +47,11 @@ renamed AS (
               {{ dbt_utils.split_part("context_user_agent","'('","1") }},
                 ';', '')
         end  AS device,
-        '{{ var('stg_segment_events_site') }}'  AS site
+        concat(CAST('{{ var('stg_rudderstack_events_site') }}' AS {{ dbt_utils.type_string() }}),'/Rudderstack') as site,
+        cast(null as {{ dbt_utils.type_string() }}) as order_id, -- amend this line and the following three more as appropriate
+        cast(null as {{ dbt_utils.type_string() }}) as local_currency,
+        cast(null as {{ dbt_utils.type_numeric() }}) as revenue_global_currency,
+        cast(null as {{ dbt_utils.type_numeric() }}) as revenue_local_currency
     FROM source
 
 )
