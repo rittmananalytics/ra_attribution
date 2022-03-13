@@ -97,15 +97,65 @@ models:
             hidden: no
         description: Boolean value to indicate whether the session contained one or more conversion events
       - name: utm_source
+        meta:
+          dimension:
+            label: "UTM Source"
+            type: string
+            hidden: no
       - name: utm_content
+        meta:
+          dimension:
+            label: "UTM Content"
+            type: string
+            hidden: no
       - name: utm_medium
+        meta:
+          dimension:
+            label: "UTM Medium"
+            type: string
+            hidden: no
       - name: utm_campaign
+        meta:
+          dimension:
+            label: "UTM Campaign"
+            type: string
+            hidden: no
       - name: platform
+        meta:
+          dimension:
+            label: "Ad Platform"
+            type: string
+            hidden: no
       - name: campaign_id
+        meta:
+          dimension:
+            label: "Campaign ID"
+            type: string
+            hidden: no
       - name: ad_group_id
+        meta:
+          dimension:
+            label: "Ad Group ID"
+            type: string
+            hidden: no
       - name: referrer_host
+        meta:
+          dimension:
+            label: "Referrer Host"
+            type: string
+            hidden: no
       - name: referrer_domain
+        meta:
+          dimension:
+            label: "Referrer Domain"
+            type: string
+            hidden: no
       - name: channel
+        meta:
+          dimension:
+            label: "Marketing Channel"
+            type: string
+            hidden: no
         description: Marketing channel responsible for the user's session, based on custom Marketing Channel logic
       - name: first_order_total_revenue
         description: For sessions that included a first order conversion event, the total global currency revenue for that first order
@@ -118,68 +168,103 @@ models:
       - name: first_order_total_lifetime_value_365d
         description: For sessions that included a first order conversion event, the total global currency 365 day revenue (spend) since their first order
       - name: currency_code
+        meta:
+          dimension:
+            label: "Local Currency Code"
+            type: string
+            hidden: no
       - name: converted_ts
         description: Timestamp for the last conversion event in this session
-      - name: min_converted_ts
-        description: Timestamp for the first conversion event in this session
+        meta:
+          dimension:
+            label: "Conversion Timestamp"
+            type: timestamp
+            hidden: no
       - name: user_registration_conversion_cycle
         description: Sequence number of the user's account opening conversion cycle. Should contain either a 0 (the user has never opened an account within the timeframe of this dbt model's data extract) or 1 (the session is one that leads-up to or includes the account opening event)
+        meta:
+          dimension:
+            label: "User Registration Conversion Cycle"
+            type: number
+            hidden: no
       - name: user_first_order_conversion_cycle
         description: Sequence number of the user's first order conversion cycle. Should contain either a 0 (the user has never placed an order within the timeframe of this dbt model's data extract) or 1 (the session is one that leads-up to or includes the first order conversion event)
+        meta:
+          dimension:
+            label: "User First Order Conversion Cycle"
+            type: number
+            hidden: no
       - name: user_repeat_order_conversion_cycle
         description: Sequence number of the user's repeat order conversion cycle. Should contain either a 0 (the user has never placed an repeat order within the timeframe of this dbt model's data extract) or any number greater than 0 (the session is one that leads-up to or includes the repeat order conversion event for that repeat order conversion cycle)
-      - name: is_within_attribution_lookback_window
-        description: Boolean value to indicate whether the session was within the lookback window (range of days) for conversion events
-      - name: is_within_attribution_time_decay_days_window
-        description: Boolean value to indicate whether the session was within the lookback window (range of days) for time-decay calculations for the time decay attribution model.
-      - name: is_non_direct_channel
-        description: Boolean value to indicate whether the session was attributed to a non-direct channel, i.e. not direct.
-      - name: is_paid_channel
-        description: Boolean value to indicate whether the session was attributed to a paid channel, i.e. has "Paid" in the channel name.
-      - name: time_decay_score
-        description: The sessions' unweighted percentage share of the conversion event, used as input into the time decay attribution model calculations. Included For debugging purposes.
-      - name: apportioned_time_decay_score
-        description: Time decay score split equally amongst the sessions with each day over which conversions are being attributed via the time decay attribution model. Included For debugging purposes.
-      - name: days_before_conversion
-        description: Number of days to the conversion event, with 0 being the day of the conversion event. Included For debugging purposes.
-      - name: time_decay_score_weighting
-        description: Time decay score (equal split of the conversion over all days in the time decay attribution window) weighted by the 2 to the power of n time decay function. Included For debugging purposes.
-      - name: time_decay_weighting_split_by_days_sessions
-        description: Weighted overall time decay score for each day but split equally by all sessions in the day for a particular user.
-      - name: count_order_conversions
-        description: Total count of order conversions within the session.
+        meta:
+          dimension:
+            label: "User Repeat Order Conversion Cycle"
+            type: number
+            hidden: no
       - name: count_repeat_order_conversions
         description: Total count of repeat order conversion events within the session.
+        meta:
+          dimension:
+            label: "Total Repeat Orders"
+            type: number
+            hidden: no
       - name: count_registration_conversions
         description: Total count of account opening conversion events within the session.
-      - name: first_click_attrib_pct
-        description: Percentage of the conversion to attribute to the session using the First Click attribution model.
-      - name: first_paid_click_attrib_pct
-        description: Percentage of the conversion to attribute to the session using the First Paid Click attribution model.
-      - name: last_click_attrib_pct
-        description: Percentage of the conversion to attribute to the session using the Last Click attribution model.
-      - name: last_paid_click_attrib_pct
-        description: Percentage of the conversion to attribute to the session using the Last Paid Click attribution model.
-      - name: even_click_attrib_pct
-        description: Percentage of the conversion to attribute to the session using the Even Click attribution model.
-      - name: time_decay_attrib_pct
-        description: Percentage of the conversion to attribute to the session using the Time Decay attribution model.
+        meta:
+          dimension:
+            label: "Total User Registrations"
+            type: number
+            hidden: no
       - name: user_registration_first_click_attrib_conversions
         description: Number of account opening conversions using the First Click Decay attribution model.
+        meta:
+          dimension:
+            label: "Total First Click User Registrations"
+            type: number
+            hidden: no
       - name: user_registration_first_non_direct_click_attrib_conversions
         description: Number of account opening conversions using the First Non-Direct Click attribution model.
+        meta:
+          dimension:
+            label: "Total First Non-Direct Click User Registrations"
+            type: number
+            hidden: no
       - name: user_registration_first_paid_click_attrib_conversions
         description: Number of account opening conversions using the First Paid Click attribution model.
+          dimension:
+            label: "Total First Paid Click User Registrations"
+            type: number
+            hidden: no
       - name: user_registration_last_click_attrib_conversions
         description: Number of account opening conversions using the Last Click attribution model.
+        dimension:
+          label: "Total Last Click User Registrations"
+          type: number
+          hidden: no
       - name: user_registration_last_non_direct_click_attrib_conversions
         description: Number of account opening conversions using the Last Non-Direct Click attribution model.
+        dimension:
+          label: "Total Last Non-Direct Click User Registrations"
+          type: number
+          hidden: no
       - name: user_registration_last_paid_click_attrib_conversions
         description: Number of account opening conversions using the Last Paid Click attribution model.
+        dimension:
+          label: "Total Last Paid Click User Registrations"
+          type: number
+          hidden: no
       - name: user_registration_even_click_attrib_conversions
         description: Number of account opening conversions using the Even Click attribution model.
+        dimension:
+          label: "Total Even Click User Registrations"
+          type: number
+          hidden: no
       - name: user_registration_time_decay_attrib_conversions
         description: Number of account opening conversions using the Time Decay attribution model.
+        dimension:
+          label: "Total Time Decay User Registrations"
+          type: number
+          hidden: no
       - name: first_order_first_click_attrib_conversions
         description: Number of first order conversions using the First Click attribution model.
       - name: first_order_first_non_direct_click_attrib_conversions
