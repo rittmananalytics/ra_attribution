@@ -131,12 +131,13 @@ vars:
                                         "first_order_ltv_60d_local_currency" : "first_order_ltv_60d_local_currency",
                                         "first_order_ltv_60d_global_currency" : "first_order_ltv_60d_global_currency",
                                         "first_order_ltv_90d_local_currency" : "first_order_ltv_90d_local_currency",
-                                        "first_order_ltv_90d_local_currency" : "first_order_ltv_90d_global_currency",
+                                        "first_order_ltv_90d_global_currency" : "first_order_ltv_90d_global_currency",
                                         "first_order_ltv_180d_local_currency" : "first_order_ltv_180d_local_currency",
                                         "first_order_ltv_180d_global_currency" : "first_order_ltv_180d_global_currency",
                                         "first_order_ltv_365d_local_currency" : "first_order_ltv_365d_local_currency",
                                         "first_order_ltv_365d_global_currency" : "first_order_ltv_365d_global_currency",
-                                        "repeat_order_total_revenue_local_currency" : "repeat_order_total_revenue_global_currency"
+                                        "repeat_order_total_revenue_local_currency" : "repeat_order_total_revenue_local_currency",
+                                        "repeat_order_total_revenue_global_currency" : "repeat_order_total_revenue_global_currency"
                                         } # list of attribution output revenue measures
 
 
