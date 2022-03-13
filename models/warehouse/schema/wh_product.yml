@@ -58,6 +58,11 @@ models:
     columns:
       - name: blended_user_id
         description: The custom user ID for each user, identity-stitched using the user's logged-in and unauthenticated sessions.
+        meta:
+          dimension:
+            label: "User ID"
+            type: number
+            hidden: no
       - name: session_start_ts
       - name: session_end_ts
       - name: session_id
