@@ -157,16 +157,6 @@ models:
             type: string
             hidden: no
         description: Marketing channel responsible for the user's session, based on custom Marketing Channel logic
-      - name: first_order_total_revenue
-        description: For sessions that included a first order conversion event, the total global currency revenue for that first order
-      - name: first_order_total_lifetime_value_30d
-        description: For sessions that included a first order conversion event, the total global currency 30 day revenue (spend) since their first order
-      - name: first_order_total_lifetime_value_90d
-        description: For sessions that included a first order conversion event, the total global currency 90 day revenue (spend) since their first order
-      - name: first_order_total_lifetime_value_180d
-        description: For sessions that included a first order conversion event, the total global currency 180 day revenue (spend) since their first order
-      - name: first_order_total_lifetime_value_365d
-        description: For sessions that included a first order conversion event, the total global currency 365 day revenue (spend) since their first order
       - name: currency_code
         meta:
           dimension:
@@ -262,83 +252,152 @@ models:
           hidden: no
       - name: first_order_first_click_attrib_conversions
         description: Number of first order conversions using the First Click attribution model.
+        dimension:
+          label: "Total First Click First Orders"
+          type: number
+          hidden: no
       - name: first_order_first_non_direct_click_attrib_conversions
         description: Number of first order conversions using the First Non-Direct Click attribution model.
+        dimension:
+          label: "Total First Non-Direct Click First Orders"
+          type: number
+          hidden: no
       - name: first_order_first_paid_click_attrib_conversions
         description: Number of first order conversions using the First Paid Click attribution model.
+        dimension:
+          label: "Total First Paid Click First Orders"
+          type: number
+          hidden: no
       - name: first_order_last_click_attrib_conversions
         description: Number of first order conversions using the Last Click attribution model.
+        dimension:
+          label: "Total Last Click Orders"
+          type: number
+          hidden: no
       - name: first_order_last_non_direct_click_attrib_conversions
         description: Number of first order conversions using the Last Non-Direct Click attribution model.
+        dimension:
+          label: "Total Last Non-Direct Click First Orders"
+          type: number
+          hidden: no
       - name: first_order_even_click_attrib_conversions
         description: Number of first order conversions using the Even Click attribution model.
+        dimension:
+          label: "Total Even Click First Orders"
+          type: number
+          hidden: no
       - name: first_order_first_click_attrib_revenue
         meta:
-          dimension:
-            label: "First Order Even Click Revenue"
-            type: number
-            hidden: no
-          metrics:
-            total_first_order_even_click_revenue_global_currency:
-              type: sum
-              label: "Total First Order Even Click Revenue"
-            avg_first_order_even_click_revenue_global_currency:
-              type: average
-              label: "Average First Order Even Click Revenue"
+        dimension:
+          label: "Total Even Click First Order Revenue"
+          type: number
+          hidden: no
       - name: first_order_first_non_direct_click_attrib_revenue
+        meta:
+        dimension:
+          label: "Total First Non-Direct Click First Order Revenue"
+          type: number
+          hidden: no
       - name: first_order_first_paid_click_attrib_revenue
+        dimension:
+          label: "Total First Paid Click First Order Revenue"
+          type: number
+          hidden: no
       - name: first_order_last_click_attrib_revenue
+        dimension:
+          label: "Total Last Click First Order Revenue"
+          type: number
+          hidden: no
       - name: first_order_last_non_direct_click_attrib_revenue
+        dimension:
+          label: "Total Last Non-Direct Click First Order Revenue"
+          type: number
+          hidden: no
       - name: first_order_last_paid_click_attrib_revenue
+        dimension:
+          label: "Total Last Paid Click First Order Revenue"
+          type: number
+          hidden: no
       - name: first_order_even_click_attrib_revenue
-      - name: first_order_first_click_total_lifetime_value_30d
-      - name: first_order_first_non_direct_click_total_lifetime_value_30d
-      - name: first_order_last_click_total_lifetime_value_30d
-      - name: first_order_last_non_direct_click_total_lifetime_value_30d
-      - name: first_order_last_paid_click_total_lifetime_value_30d
-      - name: first_order_even_click_total_lifetime_value_30d
-      - name: first_order_time_decay_total_lifetime_value_30d
-      - name: first_order_first_click_total_lifetime_value_60d
-      - name: first_order_first_non_direct_click_total_lifetime_value_60d
-      - name: first_order_last_click_total_lifetime_value_60d
-      - name: first_order_last_non_direct_click_total_lifetime_value_60d
-      - name: first_order_last_paid_click_total_lifetime_value_60d
-      - name: first_order_even_click_total_lifetime_value_60d
-      - name: first_order_time_decay_total_lifetime_value_60d
-      - name: first_order_first_non_direct_click_total_lifetime_value_90d
-      - name: first_order_last_non_direct_click_total_lifetime_value_90d
-      - name: first_order_last_paid_click_total_lifetime_value_90d
-      - name: first_order_even_click_total_lifetime_value_90d
-      - name: first_order_time_decay_total_lifetime_value_90d
-      - name: first_order_first_click_total_lifetime_value_180d
-      - name: first_order_first_non_direct_click_total_lifetime_value_180d
-      - name: first_order_last_click_total_lifetime_value_180d
-      - name: first_order_last_non_direct_click_total_lifetime_value_180d
-      - name: first_order_last_paid_click_total_lifetime_value_180d
-      - name: first_order_even_click_total_lifetime_value_180d
-      - name: first_order_time_decay_total_lifetime_value_180d
-      - name: first_order_first_click_total_lifetime_value_365d
-      - name: first_order_first_non_direct_click_total_lifetime_value_365d
-      - name: first_order_last_click_total_lifetime_value_365d
-      - name: first_order_last_non_direct_click_total_lifetime_value_365d
-      - name: first_order_last_paid_click_total_lifetime_value_365d
-      - name: first_order_even_click_total_lifetime_value_365d
-      - name: first_order_time_decay_total_lifetime_value_365d
+        dimension:
+          label: "Total Even Click First Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_first_click_attrib_conversions
+        dimension:
+          label: "Total First Click Repeat Orders"
+          type: number
+          hidden: no
       - name: repeat_order_first_non_direct_click_attrib_conversions
+        dimension:
+          label: "Total First Non-Direct Click Repeat Orders"
+          type: number
+          hidden: no
       - name: repeat_order_last_click_attrib_conversions
+        dimension:
+          label: "Total First Last Click Repeat Orders"
+          type: number
+          hidden: no
       - name: repeat_order_last_non_direct_click_attrib_conversions
+        dimension:
+          label: "Total Last Non-Direct Click Repeat Orders"
+          type: number
+          hidden: no
       - name: repeat_order_last_paid_click_attrib_conversions
+        dimension:
+          label: "Total Last Paid Click Repeat Orders"
+          type: number
+          hidden: no
       - name: repeat_order_even_click_attrib_conversions
+        dimension:
+          label: "Total Even Click Repeat Orders"
+          type: number
+          hidden: no
       - name: repeat_order_time_decay_attrib_conversions
+        dimension:
+          label: "Total Time Decay Repeat Orders"
+          type: number
+          hidden: no
       - name: repeat_order_first_click_attrib_revenue
+        dimension:
+          label: "Total First Click Repeat Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_first_non_direct_click_attrib_revenue
+        dimension:
+          label: "Total First Non-Direct Repeat Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_first_paid_click_attrib_revenue
+        dimension:
+          label: "Total First Paid Click Repeat Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_last_click_attrib_revenue
+        dimension:
+          label: "Total Last Click Repeat Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_last_non_direct_click_attrib_revenue
+        dimension:
+          label: "Total Last Non-Direct Click Repeat Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_last_paid_click_attrib_revenue
+        dimension:
+          label: "Total Last Paid Click Repeat Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_even_click_attrib_revenue
+        dimension:
+          label: "Total Even Click Repeat Order Revenue"
+          type: number
+          hidden: no
       - name: repeat_order_time_decay_attrib_revenue
+        dimension:
+          label: "Total Time Decay Repeat Order Revenue"
+          type: number
+          hidden: no
 
   - name: wh_web_sessions_fact
     description: >
