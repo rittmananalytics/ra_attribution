@@ -146,21 +146,33 @@ models:
           dimension:
             label: "Total Repeat Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_unit_amount:
+              type: sum
+              label: "Total Repeat Orders"
       - name: count_registration_conversions
         description: Total count of account opening conversion events within the session.
         meta:
           dimension:
             label: "Total User Registrations"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_user_registrations:
+              type: sum
+              label: "Total User Registrations"
       - name: user_registration_first_click_attrib_conversions
         description: Number of account opening conversions using the First Click Decay attribution model.
         meta:
           dimension:
             label: "Total First Click User Registrations"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_click_user_registrations:
+              type: sum
+              label: "Total User Registrations"
       - name: user_registration_first_non_direct_click_attrib_conversions
         description: Number of account opening conversions using the First Non-Direct Click attribution model.
         meta:
