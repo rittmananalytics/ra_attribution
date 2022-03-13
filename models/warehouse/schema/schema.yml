@@ -1,86 +1,6 @@
 version: 2
 models:
 
-  - name: ad_campaign_performance_fact
-    meta:
-      label: "Ad Campaign Performance Fact"
-    columns:
-      - name: ad_group_start_ts
-        meta:
-          dimension:
-            label: "Ad Group Start Ts"
-            type: timestamp
-            time_intervals: default
-      - name: campaign_ts
-        meta:
-          dimension:
-            label: "Campaign Ts"
-            type: timestamp
-            time_intervals: default
-      - name: campaign_start_ts
-        meta:
-          dimension:
-            label: "Campaign Start Ts"
-            type: timestamp
-            time_intervals: default
-      - name: actual_clicks
-        meta:
-          dimension:
-            label: "Actual Clicks"
-            type: number"
-            hidden: no
-      - name: days_since_campaign_start_ts
-        meta:
-          dimension:
-            label: "Days Since Campaign Start Ts"
-            type: number"
-            hidden: no
-      - name: days_since_ad_group_start_ts
-        meta:
-          dimension:
-            label: "Days Since Ad Group Start Ts"
-            type: number"
-            hidden: no
-      - name: actual_clicks
-        meta:
-          dimension:
-            label: "Actual Clicks"
-            type: number"
-            hidden: no
-          metrics:
-            total_actual_clicks:
-              type: sum
-              label: "Total Actual Clicks"
-            avg_actual_clicks:
-              type: average
-              label: "Average Actual Clicks"
-      - name: days_since_campaign_start_ts
-        meta:
-          dimension:
-            label: "Days Since Campaign Start Ts"
-            type: number"
-            hidden: no
-          metrics:
-            total_days_since_campaign_start_ts:
-              type: sum
-              label: "Total Days Since Campaign Start Ts"
-            avg_days_since_campaign_start_ts:
-              type: average
-              label: "Average Days Since Campaign Start Ts"
-      - name: days_since_ad_group_start_ts
-        meta:
-          dimension:
-            label: "Days Since Ad Group Start Ts"
-            type: number"
-            hidden: no
-          metrics:
-            total_days_since_ad_group_start_ts:
-              type: sum
-              label: "Total Days Since Ad Group Start Ts"
-            avg_days_since_ad_group_start_ts:
-              type: average
-              label: "Average Days Since Ad Group Start Ts"
-
   - name: ad_spend_roi_fact
     meta:
       label: "Ad Spend Roi Fact"
@@ -94,266 +14,266 @@ models:
       - name: first_order_total_revenue_global_currency_even_click_attrib
         meta:
           dimension:
-            label: "First Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            label: "First Order Even Click Total Revenue Global Currency"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_even_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_first_paid_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_first_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_first_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_first_click_attrib_conversions
         meta:
           dimension:
             label: "First Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_first_paid_click_attrib_conversions
         meta:
           dimension:
             label: "First Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_last_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_first_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "First Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_last_paid_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_last_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_last_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_last_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_last_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_first_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_last_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_first_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_last_paid_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_first_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_last_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_even_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_even_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_first_paid_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_first_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: actual_clicks
         meta:
           dimension:
             label: "Actual Clicks"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_first_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_last_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_even_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_even_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_last_paid_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_last_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_first_non_direct_click_attrib:
@@ -366,7 +286,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_first_click_attrib:
@@ -379,7 +299,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_last_paid_click_attrib:
@@ -392,7 +312,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_last_paid_click_attrib:
@@ -405,7 +325,7 @@ models:
         meta:
           dimension:
             label: "User Registration Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_last_paid_click_attrib_conversions:
@@ -418,7 +338,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_last_non_direct_click_attrib:
@@ -431,7 +351,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_even_click_attrib:
@@ -444,7 +364,7 @@ models:
         meta:
           dimension:
             label: "First Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_last_click_attrib_conversions:
@@ -457,7 +377,7 @@ models:
         meta:
           dimension:
             label: "First Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_last_paid_click_attrib_conversions:
@@ -470,7 +390,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_first_click_attrib:
@@ -483,7 +403,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_first_paid_click_attrib:
@@ -496,7 +416,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_first_non_direct_click_attrib_conversions:
@@ -509,7 +429,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_first_non_direct_click_attrib:
@@ -522,7 +442,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_last_non_direct_click_attrib:
@@ -535,7 +455,7 @@ models:
         meta:
           dimension:
             label: "First Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_even_click_attrib_conversions:
@@ -548,7 +468,7 @@ models:
         meta:
           dimension:
             label: "First Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_last_non_direct_click_attrib_conversions:
@@ -561,7 +481,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_last_paid_click_attrib_conversions:
@@ -574,7 +494,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_even_click_attrib:
@@ -587,7 +507,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_even_click_attrib_conversions:
@@ -600,7 +520,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_first_click_attrib_conversions:
@@ -613,7 +533,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_first_paid_click_attrib:
@@ -626,7 +546,7 @@ models:
         meta:
           dimension:
             label: "User Registration First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_first_paid_click_attrib_conversions:
@@ -639,7 +559,7 @@ models:
         meta:
           dimension:
             label: "User Registration Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_even_click_attrib_conversions:
@@ -652,7 +572,7 @@ models:
         meta:
           dimension:
             label: "Actual Clicks"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_actual_clicks:
@@ -665,7 +585,7 @@ models:
         meta:
           dimension:
             label: "User Registration Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_last_non_direct_click_attrib_conversions:
@@ -678,7 +598,7 @@ models:
         meta:
           dimension:
             label: "User Registration First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_first_click_attrib_conversions:
@@ -691,7 +611,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_last_non_direct_click_attrib_conversions:
@@ -704,7 +624,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_even_click_attrib:
@@ -717,7 +637,7 @@ models:
         meta:
           dimension:
             label: "User Registration First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_first_non_direct_click_attrib_conversions:
@@ -730,7 +650,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_first_paid_click_attrib_conversions:
@@ -743,7 +663,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_last_paid_click_attrib:
@@ -756,7 +676,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_first_non_direct_click_attrib:
@@ -769,7 +689,7 @@ models:
         meta:
           dimension:
             label: "First Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_first_click_attrib_conversions:
@@ -782,7 +702,7 @@ models:
         meta:
           dimension:
             label: "First Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_first_paid_click_attrib_conversions:
@@ -795,7 +715,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_first_paid_click_attrib:
@@ -808,7 +728,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_last_click_attrib:
@@ -821,7 +741,7 @@ models:
         meta:
           dimension:
             label: "First Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_first_non_direct_click_attrib_conversions:
@@ -834,7 +754,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_last_click_attrib:
@@ -847,7 +767,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_last_click_attrib_conversions:
@@ -860,7 +780,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_last_click_attrib:
@@ -873,7 +793,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_last_non_direct_click_attrib:
@@ -886,7 +806,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_first_click_attrib:
@@ -899,7 +819,7 @@ models:
         meta:
           dimension:
             label: "User Registration Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_last_click_attrib_conversions:
@@ -1013,469 +933,469 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: count_repeat_order_conversions
         meta:
           dimension:
             label: "Count Repeat Order Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: session_seq
         meta:
           dimension:
             label: "Session Seq"
-            type: number"
+            type: number
             hidden: no
       - name: user_total_conversions
         meta:
           dimension:
             label: "User Total Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_local_currency
         meta:
           dimension:
             label: "Repeat Order Total Revenue Local Currency"
-            type: number"
+            type: number
             hidden: no
       - name: first_non_direct_click_attrib_pct
         meta:
           dimension:
             label: "First Non Direct Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: count_conversions
         meta:
           dimension:
             label: "Count Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_first_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "First Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_even_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_last_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_first_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_first_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: count_first_order_conversions
         meta:
           dimension:
             label: "Count First Order Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_first_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_even_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: registration_conversion_event
         meta:
           dimension:
             label: "Registration Conversion Event"
-            type: number"
+            type: number
             hidden: no
       - name: count_order_conversions
         meta:
           dimension:
             label: "Count Order Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_last_paid_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_last_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_total_first_order_conversions
         meta:
           dimension:
             label: "User Total First Order Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_conversion_event
         meta:
           dimension:
             label: "Repeat Order Conversion Event"
-            type: number"
+            type: number
             hidden: no
       - name: user_total_registration_conversions
         meta:
           dimension:
             label: "User Total Registration Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_first_paid_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: user_total_order_conversions
         meta:
           dimension:
             label: "User Total Order Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency"
-            type: number"
+            type: number
             hidden: no
       - name: user_total_repeat_order_conversions
         meta:
           dimension:
             label: "User Total Repeat Order Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_first_paid_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_last_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_paid_click_attrib_pct
         meta:
           dimension:
             label: "First Paid Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_last_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_last_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_last_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_last_paid_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_last_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: last_click_attrib_pct
         meta:
           dimension:
             label: "Last Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_first_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: sessions_within_day_to_conversion
         meta:
           dimension:
             label: "Sessions Within Day To Conversion"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_even_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_even_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: days_before_conversion
         meta:
           dimension:
             label: "Days Before Conversion"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_click_attrib_pct
         meta:
           dimension:
             label: "First Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
       - name: even_click_attrib_pct
         meta:
           dimension:
             label: "Even Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
       - name: last_non_direct_click_attrib_pct
         meta:
           dimension:
             label: "Last Non Direct Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_first_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: session_day_number
         meta:
           dimension:
             label: "Session Day Number"
-            type: number"
+            type: number
             hidden: no
       - name: last_paid_click_attrib_pct
         meta:
           dimension:
             label: "Last Paid Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
       - name: user_first_order_conversion_cycle
         meta:
           dimension:
             label: "User First Order Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
       - name: user_conversion_cycle
         meta:
           dimension:
             label: "User Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_first_paid_click_attrib_conversions
         meta:
           dimension:
             label: "First Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_first_click_attrib_conversions
         meta:
           dimension:
             label: "First Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: count_registration_conversions
         meta:
           dimension:
             label: "Count Registration Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: conversion_event
         meta:
           dimension:
             label: "Conversion Event"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_last_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: order_conversion_event
         meta:
           dimension:
             label: "Order Conversion Event"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_global_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_even_click_attrib_conversions
         meta:
           dimension:
             label: "First Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_even_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_first_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "User Registration First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_repeat_order_conversion_cycle
         meta:
           dimension:
             label: "User Repeat Order Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_last_paid_click_attrib_conversions
         meta:
           dimension:
             label: "Repeat Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
       - name: user_registration_conversion_cycle
         meta:
           dimension:
             label: "User Registration Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_conversion_event
         meta:
           dimension:
             label: "First Order Conversion Event"
-            type: number"
+            type: number
             hidden: no
       - name: repeat_order_total_revenue_global_currency_last_click_attrib
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: events
         meta:
           dimension:
             label: "Events"
-            type: number"
+            type: number
             hidden: no
       - name: first_order_total_revenue_local_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
       - name: events
         meta:
           dimension:
             label: "Events"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_events:
@@ -1488,7 +1408,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_last_click_attrib:
@@ -1501,7 +1421,7 @@ models:
         meta:
           dimension:
             label: "First Order Conversion Event"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_conversion_event:
@@ -1514,7 +1434,7 @@ models:
         meta:
           dimension:
             label: "User Registration Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_conversion_cycle:
@@ -1527,7 +1447,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_last_paid_click_attrib_conversions:
@@ -1540,7 +1460,7 @@ models:
         meta:
           dimension:
             label: "User Repeat Order Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_repeat_order_conversion_cycle:
@@ -1553,7 +1473,7 @@ models:
         meta:
           dimension:
             label: "User First Order Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_first_order_conversion_cycle:
@@ -1566,7 +1486,7 @@ models:
         meta:
           dimension:
             label: "First Order Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_last_paid_click_attrib_conversions:
@@ -1579,7 +1499,7 @@ models:
         meta:
           dimension:
             label: "User Registration First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_first_paid_click_attrib_conversions:
@@ -1592,7 +1512,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_last_non_direct_click_attrib:
@@ -1605,7 +1525,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_first_click_attrib:
@@ -1618,7 +1538,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency:
@@ -1631,7 +1551,7 @@ models:
         meta:
           dimension:
             label: "User Total Registration Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_total_registration_conversions:
@@ -1644,7 +1564,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Conversion Event"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_conversion_event:
@@ -1657,7 +1577,7 @@ models:
         meta:
           dimension:
             label: "User Total First Order Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_total_first_order_conversions:
@@ -1670,7 +1590,7 @@ models:
         meta:
           dimension:
             label: "User Registration Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_last_click_attrib_conversions:
@@ -1683,7 +1603,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_last_paid_click_attrib:
@@ -1696,7 +1616,7 @@ models:
         meta:
           dimension:
             label: "User Registration First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_first_non_direct_click_attrib_conversions:
@@ -1709,7 +1629,7 @@ models:
         meta:
           dimension:
             label: "First Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_last_non_direct_click_attrib_conversions:
@@ -1722,7 +1642,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_last_non_direct_click_attrib:
@@ -1735,7 +1655,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_even_click_attrib:
@@ -1748,7 +1668,7 @@ models:
         meta:
           dimension:
             label: "Registration Conversion Event"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_registration_conversion_event:
@@ -1761,7 +1681,7 @@ models:
         meta:
           dimension:
             label: "Count Order Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_count_order_conversions:
@@ -1774,7 +1694,7 @@ models:
         meta:
           dimension:
             label: "First Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_last_click_attrib_conversions:
@@ -1787,7 +1707,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_even_click_attrib:
@@ -1800,7 +1720,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_last_click_attrib:
@@ -1813,7 +1733,7 @@ models:
         meta:
           dimension:
             label: "Order Conversion Event"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_order_conversion_event:
@@ -1826,7 +1746,7 @@ models:
         meta:
           dimension:
             label: "Last Paid Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_last_paid_click_attrib_pct:
@@ -1839,7 +1759,7 @@ models:
         meta:
           dimension:
             label: "Count Registration Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_count_registration_conversions:
@@ -1852,7 +1772,7 @@ models:
         meta:
           dimension:
             label: "Conversion Event"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_conversion_event:
@@ -1865,7 +1785,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_last_paid_click_attrib:
@@ -1878,7 +1798,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_first_non_direct_click_attrib:
@@ -1891,7 +1811,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_last_non_direct_click_attrib_conversions:
@@ -1904,7 +1824,7 @@ models:
         meta:
           dimension:
             label: "User Registration Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_even_click_attrib_conversions:
@@ -1917,7 +1837,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_last_click_attrib:
@@ -1930,7 +1850,7 @@ models:
         meta:
           dimension:
             label: "User Registration Last Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_last_paid_click_attrib_conversions:
@@ -1943,7 +1863,7 @@ models:
         meta:
           dimension:
             label: "User Registration Last Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_last_non_direct_click_attrib_conversions:
@@ -1956,7 +1876,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_first_non_direct_click_attrib:
@@ -1969,7 +1889,7 @@ models:
         meta:
           dimension:
             label: "First Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_click_attrib_pct:
@@ -1982,7 +1902,7 @@ models:
         meta:
           dimension:
             label: "Even Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_even_click_attrib_pct:
@@ -1995,7 +1915,7 @@ models:
         meta:
           dimension:
             label: "First Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_first_click_attrib_conversions:
@@ -2008,7 +1928,7 @@ models:
         meta:
           dimension:
             label: "Session Day Number"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_session_day_number:
@@ -2021,7 +1941,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_first_click_attrib_conversions:
@@ -2034,7 +1954,7 @@ models:
         meta:
           dimension:
             label: "Last Non Direct Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_last_non_direct_click_attrib_pct:
@@ -2047,7 +1967,7 @@ models:
         meta:
           dimension:
             label: "Days Before Conversion"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_days_before_conversion:
@@ -2060,7 +1980,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Last Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_last_click_attrib_conversions:
@@ -2073,7 +1993,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_even_click_attrib_conversions:
@@ -2086,7 +2006,7 @@ models:
         meta:
           dimension:
             label: "Sessions Within Day To Conversion"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_sessions_within_day_to_conversion:
@@ -2099,7 +2019,7 @@ models:
         meta:
           dimension:
             label: "User Registration First Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_registration_first_click_attrib_conversions:
@@ -2112,7 +2032,7 @@ models:
         meta:
           dimension:
             label: "Last Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_last_click_attrib_pct:
@@ -2125,7 +2045,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency Even Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_even_click_attrib:
@@ -2138,7 +2058,7 @@ models:
         meta:
           dimension:
             label: "First Order Even Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_even_click_attrib_conversions:
@@ -2151,7 +2071,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_first_paid_click_attrib:
@@ -2164,7 +2084,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency Last Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_last_non_direct_click_attrib:
@@ -2177,7 +2097,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency:
@@ -2190,7 +2110,7 @@ models:
         meta:
           dimension:
             label: "User Total Repeat Order Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_total_repeat_order_conversions:
@@ -2203,7 +2123,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_first_paid_click_attrib_conversions:
@@ -2216,7 +2136,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_first_paid_click_attrib:
@@ -2229,7 +2149,7 @@ models:
         meta:
           dimension:
             label: "Count Repeat Order Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_count_repeat_order_conversions:
@@ -2242,7 +2162,7 @@ models:
         meta:
           dimension:
             label: "First Paid Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_paid_click_attrib_pct:
@@ -2255,7 +2175,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency:
@@ -2268,7 +2188,7 @@ models:
         meta:
           dimension:
             label: "Session Seq"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_session_seq:
@@ -2281,7 +2201,7 @@ models:
         meta:
           dimension:
             label: "User Total Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_total_conversions:
@@ -2294,7 +2214,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Local Currency"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_local_currency:
@@ -2307,7 +2227,7 @@ models:
         meta:
           dimension:
             label: "First Non Direct Click Attrib Pct"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_non_direct_click_attrib_pct:
@@ -2320,7 +2240,7 @@ models:
         meta:
           dimension:
             label: "User Total Order Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_total_order_conversions:
@@ -2333,7 +2253,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency Last Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_last_paid_click_attrib:
@@ -2346,7 +2266,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Local Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_local_currency_first_click_attrib:
@@ -2359,7 +2279,7 @@ models:
         meta:
           dimension:
             label: "First Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_first_non_direct_click_attrib_conversions:
@@ -2372,7 +2292,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order Total Revenue Global Currency First Non Direct Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_total_revenue_global_currency_first_non_direct_click_attrib:
@@ -2385,7 +2305,7 @@ models:
         meta:
           dimension:
             label: "Repeat Order First Non Direct Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_repeat_order_first_non_direct_click_attrib_conversions:
@@ -2398,7 +2318,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_first_click_attrib:
@@ -2411,7 +2331,7 @@ models:
         meta:
           dimension:
             label: "Count First Order Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_count_first_order_conversions:
@@ -2424,7 +2344,7 @@ models:
         meta:
           dimension:
             label: "Count Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_count_conversions:
@@ -2437,7 +2357,7 @@ models:
         meta:
           dimension:
             label: "First Order Total Revenue Global Currency First Paid Click Attrib"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_total_revenue_global_currency_first_paid_click_attrib:
@@ -2450,7 +2370,7 @@ models:
         meta:
           dimension:
             label: "User Conversion Cycle"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_user_conversion_cycle:
@@ -2463,7 +2383,7 @@ models:
         meta:
           dimension:
             label: "First Order First Paid Click Attrib Conversions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_first_order_first_paid_click_attrib_conversions:
@@ -2487,121 +2407,121 @@ models:
         meta:
           dimension:
             label: "Int Orders"
-            type: number"
+            type: number
             hidden: no
       - name: source_orders
         meta:
           dimension:
             label: "Source Orders"
-            type: number"
+            type: number
             hidden: no
       - name: source_snowplow_sessions
         meta:
           dimension:
             label: "Source Snowplow Sessions"
-            type: number"
+            type: number
             hidden: no
       - name: staging_custom_generated_user_registration_sessions
         meta:
           dimension:
             label: "Staging Custom Generated User Registration Sessions"
-            type: number"
+            type: number
             hidden: no
       - name: source_users
         meta:
           dimension:
             label: "Source Users"
-            type: number"
+            type: number
             hidden: no
       - name: attribution_orders
         meta:
           dimension:
             label: "Attribution Orders"
-            type: number"
+            type: number
             hidden: no
       - name: staging_snowplow_sessions
         meta:
           dimension:
             label: "Staging Snowplow Sessions"
-            type: number"
+            type: number
             hidden: no
       - name: staging_revenue
         meta:
           dimension:
             label: "Staging Revenue"
-            type: number"
+            type: number
             hidden: no
       - name: source_revenue
         meta:
           dimension:
             label: "Source Revenue"
-            type: number"
+            type: number
             hidden: no
       - name: attribution_revenue
         meta:
           dimension:
             label: "Attribution Revenue"
-            type: number"
+            type: number
             hidden: no
       - name: warehouse_users
         meta:
           dimension:
             label: "Warehouse Users"
-            type: number"
+            type: number
             hidden: no
       - name: staging_custom_generated_order_sessions
         meta:
           dimension:
             label: "Staging Custom Generated Order Sessions"
-            type: number"
+            type: number
             hidden: no
       - name: staging_orders
         meta:
           dimension:
             label: "Staging Orders"
-            type: number"
+            type: number
             hidden: no
       - name: int_sessions
         meta:
           dimension:
             label: "Int Sessions"
-            type: number"
+            type: number
             hidden: no
       - name: attribution_users
         meta:
           dimension:
             label: "Attribution Users"
-            type: number"
+            type: number
             hidden: no
       - name: staging_users
         meta:
           dimension:
             label: "Staging Users"
-            type: number"
+            type: number
             hidden: no
       - name: warehouse_orders
         meta:
           dimension:
             label: "Warehouse Orders"
-            type: number"
+            type: number
             hidden: no
       - name: warehouse_sessions
         meta:
           dimension:
             label: "Warehouse Sessions"
-            type: number"
+            type: number
             hidden: no
       - name: int_users
         meta:
           dimension:
             label: "Int Users"
-            type: number"
+            type: number
             hidden: no
       - name: source_revenue
         meta:
           dimension:
             label: "Source Revenue"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_source_revenue:
@@ -2614,7 +2534,7 @@ models:
         meta:
           dimension:
             label: "Attribution Orders"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_attribution_orders:
@@ -2627,7 +2547,7 @@ models:
         meta:
           dimension:
             label: "Source Snowplow Sessions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_source_snowplow_sessions:
@@ -2640,7 +2560,7 @@ models:
         meta:
           dimension:
             label: "Source Orders"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_source_orders:
@@ -2653,7 +2573,7 @@ models:
         meta:
           dimension:
             label: "Int Orders"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_int_orders:
@@ -2666,7 +2586,7 @@ models:
         meta:
           dimension:
             label: "Warehouse Users"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_warehouse_users:
@@ -2679,7 +2599,7 @@ models:
         meta:
           dimension:
             label: "Staging Users"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_staging_users:
@@ -2692,7 +2612,7 @@ models:
         meta:
           dimension:
             label: "Staging Custom Generated User Registration Sessions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_staging_custom_generated_user_registration_sessions:
@@ -2705,7 +2625,7 @@ models:
         meta:
           dimension:
             label: "Source Users"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_source_users:
@@ -2718,7 +2638,7 @@ models:
         meta:
           dimension:
             label: "Staging Snowplow Sessions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_staging_snowplow_sessions:
@@ -2731,7 +2651,7 @@ models:
         meta:
           dimension:
             label: "Attribution Revenue"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_attribution_revenue:
@@ -2744,7 +2664,7 @@ models:
         meta:
           dimension:
             label: "Staging Custom Generated Order Sessions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_staging_custom_generated_order_sessions:
@@ -2757,7 +2677,7 @@ models:
         meta:
           dimension:
             label: "Staging Orders"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_staging_orders:
@@ -2770,7 +2690,7 @@ models:
         meta:
           dimension:
             label: "Int Sessions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_int_sessions:
@@ -2783,7 +2703,7 @@ models:
         meta:
           dimension:
             label: "Attribution Users"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_attribution_users:
@@ -2796,7 +2716,7 @@ models:
         meta:
           dimension:
             label: "Warehouse Orders"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_warehouse_orders:
@@ -2809,7 +2729,7 @@ models:
         meta:
           dimension:
             label: "Warehouse Sessions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_warehouse_sessions:
@@ -2822,7 +2742,7 @@ models:
         meta:
           dimension:
             label: "Int Users"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_int_users:
@@ -2835,7 +2755,7 @@ models:
         meta:
           dimension:
             label: "Staging Revenue"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_staging_revenue:
@@ -2859,25 +2779,25 @@ models:
         meta:
           dimension:
             label: "Event Seq"
-            type: number"
+            type: number
             hidden: no
       - name: time_on_page_secs
         meta:
           dimension:
             label: "Time On Page Secs"
-            type: number"
+            type: number
             hidden: no
       - name: event_in_session_seq
         meta:
           dimension:
             label: "Event In Session Seq"
-            type: number"
+            type: number
             hidden: no
       - name: event_seq
         meta:
           dimension:
             label: "Event Seq"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_event_seq:
@@ -2890,7 +2810,7 @@ models:
         meta:
           dimension:
             label: "Time On Page Secs"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_time_on_page_secs:
@@ -2903,7 +2823,7 @@ models:
         meta:
           dimension:
             label: "Event In Session Seq"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_event_in_session_seq:
@@ -2945,25 +2865,25 @@ models:
         meta:
           dimension:
             label: "Mins Between Sessions"
-            type: number"
+            type: number
             hidden: no
       - name: events
         meta:
           dimension:
             label: "Events"
-            type: number"
+            type: number
             hidden: no
       - name: duration_in_s
         meta:
           dimension:
             label: "Duration In S"
-            type: number"
+            type: number
             hidden: no
       - name: mins_between_sessions
         meta:
           dimension:
             label: "Mins Between Sessions"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_mins_between_sessions:
@@ -2976,7 +2896,7 @@ models:
         meta:
           dimension:
             label: "Events"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_events:
@@ -2989,7 +2909,7 @@ models:
         meta:
           dimension:
             label: "Duration In S"
-            type: number"
+            type: number
             hidden: no
           metrics:
             total_duration_in_s:
