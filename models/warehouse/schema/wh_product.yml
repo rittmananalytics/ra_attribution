@@ -750,12 +750,12 @@ models:
           label: "Last Page Url Path"
           type: string
           hidden: no
-        - name: referrer_medium
-          meta:
-            dimension:
-              label: "Referrer Medium"
-              type: string
-              hidden: no
+    - name: referrer_medium
+      meta:
+        dimension:
+          label: "Referrer Medium"
+          type: string
+          hidden: no
     - name: referrer_source
       meta:
         dimension:
