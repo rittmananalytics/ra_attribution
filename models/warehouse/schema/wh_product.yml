@@ -161,6 +161,17 @@ models:
             total_unit_amount:
               type: sum
               label: "Repeat Orders"
+      - name: count_first_order_conversions
+        description: Total count of first order conversion events within the session.
+        meta:
+          dimension:
+            label: "Total First Orders"
+            type: number
+            hidden: yes
+          metrics:
+            total_unit_amount:
+              type: sum
+              label: "First Orders"
       - name: count_registration_conversions
         description: Total count of account opening conversion events within the session.
         meta:
