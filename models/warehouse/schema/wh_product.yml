@@ -3,9 +3,9 @@ version: 2
 models:
 
   - name: wh_ad_campaign_performance_fact
+    description: "Ad Campaign Clicks, Impressions and Spend"
     meta:
       label: "Campaign Performance"
-      description: "Ad Campaign Clicks, Impressions and Spend"
 
     columns:
       - name: ad_campaign_performance_pk
@@ -159,9 +159,9 @@ models:
 
 
   - name: wh_ad_spend_roi_fact
+    description: "Ad Campaign Spend and Attributed Revenue"
     meta:
       label: "Ad Spend RoI"
-      description: "Ad Campaign Spend and Attributed Revenue"
     columns:
       - name: campaign_ts
         meta:
@@ -612,9 +612,9 @@ models:
 
 
   - name: wh_web_events_fact
+    description: "Page Views and other Visitor Events"
     meta:
       label: "Events"
-      description: "Page Views and other Visitor Events"
       join:
         sql_on: ${wh_web_events_fact.web_sessions_pk} = ${wh_web_sessions_fact.web_sessions_pk}
     columns:
@@ -806,9 +806,9 @@ models:
               label: "Average Time On Page Secs"
 
   - name: wh_web_sessions_fact
+    description: "Visitor Sessions and Marketing Acquisition"
     meta:
       label: "Sessions"
-      description: "Visitor Sessions and Marketing Acquisition"
       join:
         sql_on: ${wh_web_sessions_fact.web_sessions_pk} = ${wh_web_events_fact.web_sessions_pk}
     columns:
@@ -1013,9 +1013,9 @@ models:
 
 
   - name: wh_attribution_fact
+    description: "New Accounts, First and Repeat Order Revenue Attribution"
     meta:
       label: "Revenue Attribution"
-      description: "New Accounts, First and Repeat Order Revenue Attribution"
       join:
         sql_on: ${wh_attribution_fact.web_sessions_pk} = ${wh_web_sessions_fact.web_sessions_pk}
     columns:
