@@ -772,7 +772,12 @@ models:
             label: "Web Sessions Key"
             type: string
             hidden: no
-
+      - name: channel
+        meta:
+          dimension:
+            label: "Channel"
+            type: string
+            hidden: no
       - name: event_seq
         meta:
           dimension:
