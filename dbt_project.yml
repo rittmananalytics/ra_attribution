@@ -92,7 +92,7 @@ vars:
   attribution_warehouse_click_id_sources: ['google_ads']
   attribution_warehouse_currency_rate_sources: ['custom_currency_rates']
 
-  attribution_warehouse_event_sources: ['custom_events_order','custom_events_registration','snowplow_events_all','segment_events_page','segment_events_track','rudderstack_events_page','rudderstack_events_track']
+  attribution_warehouse_event_sources: ['custom_events_order','custom_events_registration','snowplow_events_all']
   attribution_warehouse_ltv_sources: ['custom_ltv_customer']
 
   # various configuration variables used throughout the package
