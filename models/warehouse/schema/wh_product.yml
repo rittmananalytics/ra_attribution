@@ -1036,22 +1036,7 @@ models:
             total_blended_user_ids:
               type: count_distinct
               label: "Total Users"
-      - name: user_id
-        description: The user ID for each user, from the user's logged-in sessions.
-        meta:
-          dimension:
-            label: "User ID"
-            type: string
-            hidden: no
-      - name: visitor_id
-        description: The visitor ID for each user, from the user's unauthenticated sessions.
-        meta:
-          dimension:
-            label: "Visitor ID"
-            type: string
-            hidden: no
-
-      - name: session_start_ts
+        - name: session_start_ts
         meta:
           dimension:
             label: "Session Start"
