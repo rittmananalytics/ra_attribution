@@ -1036,7 +1036,7 @@ models:
             total_blended_user_ids:
               type: count_distinct
               label: "Total Users"
-        - name: session_start_ts
+      - name: session_start_ts
         meta:
           dimension:
             label: "Session Start"
