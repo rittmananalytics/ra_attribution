@@ -547,10 +547,10 @@ models:
               type: sum
               label: "Time Decay Repeat Order Revenue"
 
-- name: wh_web_sessions_fact
-  meta:
-    label: "Web Sessions Fact"
-  columns:
+  - name: wh_web_sessions_fact
+    meta:
+      label: "Web Sessions Fact"
+    columns:
     - name: session_end_ts
       meta:
         dimension:
