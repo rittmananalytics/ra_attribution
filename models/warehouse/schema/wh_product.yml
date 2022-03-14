@@ -2,6 +2,126 @@ version: 2
 
 models:
 
+  - name: wh_ad_campaign_performance_fact
+    meta:
+      label: "Ad Campaign Performance"
+    columns:
+      - name: ad_campaign_performance_pk
+        meta:
+          dimension:
+            label: "Ad Campaign Performance Key"
+            type: string
+            hidden: no
+      - name: ad_campaign_pk
+        meta:
+          dimension:
+            label: "Ad Campaign Key"
+            type: string
+            hidden: no
+      - name: campaign_date
+        meta:
+          dimension:
+            label: "Campaign Date"
+            type: timestamp
+            time_intervals: default
+      - name: total_clicks
+        meta:
+          dimension:
+            label: "Total Clicks"
+            type: number
+            hidden: no
+      - name: total_reported_clicks
+        meta:
+          dimension:
+            label: "Total Reported Clicks"
+            type: number
+            hidden: no
+      - name: total_reported_impressions
+        meta:
+          dimension:
+            label: "Total Reported Impressions"
+            type: number
+            hidden: no
+      - name: actual_vs_reported_clicks_pct
+        meta:
+          dimension:
+            label: "Actual Vs Reported Clicks Pct"
+            type: number
+            hidden: yes
+          metrics:
+            total_actual_vs_reported_clicks_pct:
+              type: sum
+              label: "Total Actual Vs Reported Clicks Pct"
+            avg_actual_vs_reported_clicks_pct:
+              type: average
+              label: "Average Actual Vs Reported Clicks Pct"
+      - name: total_reported_cost
+        meta:
+          dimension:
+            label: "Total Reported Cost"
+            type: number
+            hidden: yes
+          metrics:
+            total_total_reported_cost:
+              type: sum
+              label: "Total Total Reported Cost"
+            avg_total_reported_cost:
+              type: average
+              label: "Average Total Reported Cost"
+      - name: reported_cpc
+        meta:
+          dimension:
+            label: "Reported Cpc"
+            type: number
+            hidden: yes
+          metrics:
+            total_reported_cpc:
+              type: sum
+              label: "Total Reported Cpc"
+            avg_reported_cpc:
+              type: average
+              label: "Average Reported Cpc"
+      - name: reported_ctr
+        meta:
+          dimension:
+            label: "Reported Ctr"
+            type: number
+            hidden: yes
+          metrics:
+            total_reported_ctr:
+              type: sum
+              label: "Total Reported Ctr"
+            avg_reported_ctr:
+              type: average
+              label: "Average Reported Ctr"
+      - name: actual_ctr
+        meta:
+          dimension:
+            label: "Actual Ctr"
+            type: number
+            hidden: yes
+          metrics:
+            total_actual_ctr:
+              type: sum
+              label: "Total Actual Ctr"
+            avg_actual_ctr:
+              type: average
+              label: "Average Actual Ctr"
+      - name: reported_cpm
+        meta:
+          dimension:
+            label: "Reported Cpm"
+            type: number
+            hidden: yes
+          metrics:
+            total_reported_cpm:
+              type: sum
+              label: "Total Reported Cpm"
+            avg_reported_cpm:
+              type: average
+              label: "Average Reported Cpm"
+
+
 
   - name: wh_attribution_fact
     meta:
@@ -563,12 +683,16 @@ models:
             label: "Web Event Key"
             type: string
             hidden: no
+          metrics:
+            total_events:
+              type: count_distinct
+              label: "Count of Events"
       - name: event_id
         meta:
           dimension:
             label: "Event Id"
             type: string
-            hidden: no
+            hidden: yes
       - name: event_type
         meta:
           dimension:
@@ -707,24 +831,6 @@ models:
             label: "Converting Page Title"
             type: string
             hidden: no
-      - name: pre_converting_page_url
-        meta:
-          dimension:
-            label: "Pre Converting Page Url"
-            type: string
-            hidden: no
-      - name: pre_converting_page_title
-        meta:
-          dimension:
-            label: "Pre Converting Page Title"
-            type: string
-            hidden: no
-      - name: prev_event_type
-        meta:
-          dimension:
-            label: "Prev Event Type"
-            type: string
-            hidden: no
       - name: web_sessions_pk
         meta:
           dimension:
@@ -767,6 +873,8 @@ models:
   - name: wh_web_sessions_fact
     meta:
       label: "Sessions"
+      join:
+        sql_on: ${wh_web_sessions_fact.web_sessions_pk} = ${wh_web_events_fact.web_sessions_pk}
     columns:
     - name: session_end_ts
       meta:
