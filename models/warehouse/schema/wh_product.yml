@@ -1029,13 +1029,28 @@ models:
         description: The custom user ID for each user, identity-stitched using the user's logged-in and unauthenticated sessions.
         meta:
           dimension:
-            label: "User ID"
-            type: number
+            label: "Blended User ID"
+            type: string
             hidden: no
           metrics:
             total_blended_user_ids:
               type: count_distinct
               label: "Total Users"
+      - name: user_id
+        description: The user ID for each user, from the user's logged-in sessions.
+        meta:
+          dimension:
+            label: "Blended User ID"
+            type: string
+            hidden: no
+      - name: visitor_id
+        description: The visitor ID for each user, from the user's unauthenticated sessions.
+        meta:
+          dimension:
+            label: "Visitor ID"
+            type: string
+            hidden: no
+
       - name: session_start_ts
         meta:
           dimension:
@@ -1394,6 +1409,7 @@ models:
             total_last_non_direct_click_first_order_revenue:
               type: sum
               label: "Last Non-Direct Click First Order Revenue"
+
       - name: first_order_last_paid_click_attrib_revenue
         meta:
           dimension:
@@ -1404,7 +1420,7 @@ models:
             total_last_paid_click_first_order_revenue:
               type: sum
               label: "Last Paid Click First Order Revenue"
-              
+
       - name: first_order_even_click_attrib_revenue
         meta:
           dimension:
@@ -1415,6 +1431,7 @@ models:
             total_even_click_first_order_revenue:
               type: sum
               label: "Even Click First Order Revenue"
+
       - name: repeat_order_first_click_attrib_conversions
         meta:
           dimension:
