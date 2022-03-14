@@ -1040,7 +1040,7 @@ models:
         description: The user ID for each user, from the user's logged-in sessions.
         meta:
           dimension:
-            label: "Blended User ID"
+            label: "User ID"
             type: string
             hidden: no
       - name: visitor_id
