@@ -158,7 +158,7 @@ models:
             type: number
             hidden: yes
           metrics:
-            total_unit_amount:
+            total_repeat_orders:
               type: sum
               label: "Repeat Orders"
       - name: count_first_order_conversions
@@ -169,7 +169,7 @@ models:
             type: number
             hidden: yes
           metrics:
-            total_unit_amount:
+            total_first_orders:
               type: sum
               label: "First Orders"
       - name: count_registration_conversions
