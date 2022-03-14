@@ -547,9 +547,51 @@ models:
               type: sum
               label: "Time Decay Repeat Order Revenue"
 
+  - name: wh_web_events_fact
+    meta:
+      label: "Events"
+    columns:
+      - name: event_ts
+        meta:
+          dimension:
+            label: "Event"
+            type: timestamp
+            time_intervals: default
+      - name: event_seq
+        meta:
+          dimension:
+            label: "Event Seq"
+            type: number
+            hidden: no
+      - name: event_in_session_seq
+        meta:
+          dimension:
+            label: "Session Event Order"
+            type: number
+            hidden: no
+      - name: event_seq
+        meta:
+          dimension:
+            label: "Session Order"
+            type: number
+            hidden: no
+      - name: time_on_page_secs
+        meta:
+          dimension:
+            label: "Time On Page Secs"
+            type: number
+            hidden: yes
+          metrics:
+            total_time_on_page_secs:
+              type: sum
+              label: "Total Time On Page Secs"
+            avg_time_on_page_secs:
+              type: average
+              label: "Average Time On Page Secs"
+
   - name: wh_web_sessions_fact
     meta:
-      label: "Web Sessions Fact"
+      label: "Sessions"
     columns:
     - name: session_end_ts
       meta:
@@ -598,7 +640,7 @@ models:
         dimension:
           label: "Mins Between Sessions"
           type: number
-          hidden: no
+          hidden: yes
         metrics:
           total_mins_between_sessions:
             type: sum
@@ -606,12 +648,138 @@ models:
           avg_mins_between_sessions:
             type: average
             label: "Average Mins Between Sessions"
+    - name: web_sessions_pk
+      meta:
+        dimension:
+          label: "Web Sessions Key"
+          type: string
+          hidden: no
+    - name: utm_source
+      meta:
+        dimension:
+          label: "Utm Source"
+          type: string
+          hidden: no
+    - name: utm_content
+      meta:
+        dimension:
+          label: "Utm Content"
+          type: string
+          hidden: no
+    - name: utm_medium
+      meta:
+        dimension:
+          label: "Utm Medium"
+          type: string
+          hidden: no
+    - name: utm_campaign
+      meta:
+        dimension:
+          label: "Utm Campaign"
+          type: string
+          hidden: no
+    - name: utm_term
+      meta:
+        dimension:
+          label: "Utm Term"
+          type: string
+          hidden: no
+    - name: search
+      meta:
+        dimension:
+          label: "Search"
+          type: string
+          hidden: no
+    - name: gclid
+      meta:
+        dimension:
+          label: "Gclid"
+          type: string
+          hidden: no
+    - name: first_page_url
+      meta:
+        dimension:
+          label: "First Page Url"
+          type: string
+          hidden: no
+    - name: first_page_url_host
+      meta:
+        dimension:
+          label: "First Page Url Host"
+          type: string
+          hidden: no
+    - name: first_page_url_path
+      meta:
+        dimension:
+          label: "First Page Url Path"
+          type: string
+          hidden: no
+    - name: referrer_host
+      meta:
+        dimension:
+          label: "Referrer Host"
+          type: string
+          hidden: no
+    - name: device
+      meta:
+        dimension:
+          label: "Device"
+          type: string
+          hidden: no
+    - name: device_category
+      meta:
+        dimension:
+          label: "Device Category"
+          type: string
+          hidden: no
+    - name: last_page_url
+      meta:
+        dimension:
+          label: "Last Page Url"
+          type: string
+          hidden: no
+    - name: last_page_url_host
+      meta:
+        dimension:
+          label: "Last Page Url Host"
+          type: string
+          hidden: no
+    - name: last_page_url_path
+      meta:
+        dimension:
+          label: "Last Page Url Path"
+          type: string
+          hidden: no
+        - name: referrer_medium
+          meta:
+            dimension:
+              label: "Referrer Medium"
+              type: string
+              hidden: no
+    - name: referrer_source
+      meta:
+        dimension:
+          label: "Referrer Source"
+          type: string
+          hidden: no
+    - name: channel
+      meta:
+        dimension:
+          label: "Channel"
+          type: string
+          hidden: no
+    - name: blended_user_id
+      meta:
+        dimension:
+          label: "Blended User Id"
+          type: string
+          hidden: no
     - name: events
       meta:
         dimension:
           label: "Events"
           type: number
-          hidden: no
+          hidden: yes
         metrics:
           total_events:
             type: sum
@@ -624,7 +792,7 @@ models:
         dimension:
           label: "Duration In S"
           type: number
-          hidden: no
+          hidden: yes
         metrics:
           total_duration_in_s:
             type: sum
