@@ -11,7 +11,7 @@ models:
         description: The custom user ID for each user, identity-stitched using the user's logged-in and unauthenticated sessions.
         meta:
           dimension:
-            label: "User ID"
+            label: "Blended User ID"
             type: number
             hidden: no
           metrics:
@@ -557,6 +557,185 @@ models:
             label: "Event"
             type: timestamp
             time_intervals: default
+
+  - name: web_event_pk
+    meta:
+    columns:
+      - name: web_event_pk
+        meta:
+          dimension:
+            label: "Web Event Key"
+            type: string
+            hidden: no
+      - name: event_id
+        meta:
+          dimension:
+            label: "Event Id"
+            type: string
+            hidden: no
+      - name: event_type
+        meta:
+          dimension:
+            label: "Event Type"
+            type: string
+            hidden: no
+      - name: event_details
+        meta:
+          dimension:
+            label: "Event Details"
+            type: string
+            hidden: no
+      - name: page_title
+        meta:
+          dimension:
+            label: "Page Title"
+            type: string
+            hidden: no
+      - name: page_url_path
+        meta:
+          dimension:
+            label: "Page Url Path"
+            type: string
+            hidden: no
+      - name: referrer_host
+        meta:
+          dimension:
+            label: "Referrer Host"
+            type: string
+            hidden: no
+      - name: search
+        meta:
+          dimension:
+            label: "Search"
+            type: string
+            hidden: no
+      - name: page_url
+        meta:
+          dimension:
+            label: "Page Url"
+            type: string
+            hidden: no
+      - name: page_url_host
+        meta:
+          dimension:
+            label: "Page Url Host"
+            type: string
+            hidden: no
+      - name: gclid
+        meta:
+          dimension:
+            label: "Gclid"
+            type: string
+            hidden: no
+      - name: utm_term
+        meta:
+          dimension:
+            label: "Utm Term"
+            type: string
+            hidden: no
+      - name: utm_content
+        meta:
+          dimension:
+            label: "Utm Content"
+            type: string
+            hidden: no
+      - name: utm_medium
+        meta:
+          dimension:
+            label: "Utm Medium"
+            type: string
+            hidden: no
+      - name: utm_campaign
+        meta:
+          dimension:
+            label: "Utm Campaign"
+            type: string
+            hidden: no
+      - name: utm_source
+        meta:
+          dimension:
+            label: "Utm Source"
+            type: string
+            hidden: no
+      - name: ip
+        meta:
+          dimension:
+            label: "Ip"
+            type: string
+            hidden: no
+      - name: visitor_id
+        meta:
+          dimension:
+            label: "Visitor Id"
+            type: string
+            hidden: no
+      - name: user_id
+        meta:
+          dimension:
+            label: "User Id"
+            type: string
+            hidden: no
+      - name: device
+        meta:
+          dimension:
+            label: "Device"
+            type: string
+            hidden: no
+      - name: device_category
+        meta:
+          dimension:
+            label: "Device Category"
+            type: string
+            hidden: no
+      - name: site
+        meta:
+          dimension:
+            label: "Site"
+            type: string
+            hidden: no
+      - name: blended_user_id
+        meta:
+          dimension:
+            label: "Blended User Id"
+            type: string
+            hidden: no
+      - name: converting_page_url
+        meta:
+          dimension:
+            label: "Converting Page Url"
+            type: string
+            hidden: no
+      - name: converting_page_title
+        meta:
+          dimension:
+            label: "Converting Page Title"
+            type: string
+            hidden: no
+      - name: pre_converting_page_url
+        meta:
+          dimension:
+            label: "Pre Converting Page Url"
+            type: string
+            hidden: no
+      - name: pre_converting_page_title
+        meta:
+          dimension:
+            label: "Pre Converting Page Title"
+            type: string
+            hidden: no
+      - name: prev_event_type
+        meta:
+          dimension:
+            label: "Prev Event Type"
+            type: string
+            hidden: no
+      - name: web_sessions_pk
+        meta:
+          dimension:
+            label: "Web Sessions Key"
+            type: string
+            hidden: no
+
       - name: event_seq
         meta:
           dimension:
