@@ -12,36 +12,87 @@ models:
             label: "Ad Campaign Performance Key"
             type: string
             hidden: no
-      - name: ad_campaign_pk
+      - name: platform
         meta:
           dimension:
-            label: "Ad Campaign Key"
+            label: "Ad Platform"
             type: string
             hidden: no
-      - name: campaign_date
+      - name: account_id
+        meta:
+          dimension:
+            label: "Account ID"
+            type: string
+            hidden: no
+      - name: account_name
+        meta:
+          dimension:
+            label: "Account Name"
+            type: string
+            hidden: no
+      - name: local_currency
+        meta:
+          dimension:
+            label: "Local Currency"
+            type: string
+            hidden: no
+      - name: campaign_id
+        meta:
+          dimension:
+            label: "Campaign ID"
+            type: string
+            hidden: no
+      - name: campaign_name
+        meta:
+          dimension:
+            label: "Campaign Name"
+            type: string
+      - name: campaign_ts
         meta:
           dimension:
             label: "Campaign Date"
             type: timestamp
             time_intervals: default
+      - name: ad_group_id
+        meta:
+          dimension:
+            label: "Ad Group ID"
+            type: string
+      - name: ad_group_name
+        meta:
+          dimension:
+            label: "Ad Group Name"
+            type: string
       - name: total_clicks
         meta:
           dimension:
             label: "Total Clicks"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_clicks:
+              type: sum
+              label: "Total Clicks"
       - name: total_reported_clicks
         meta:
           dimension:
             label: "Total Reported Clicks"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_reported_clicks:
+              type: sum
+              label: "Total Reported Clicks"
       - name: total_reported_impressions
         meta:
           dimension:
             label: "Total Reported Impressions"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_reported_impressions:
+              type: sum
+              label: "Total Reported Impressions"
       - name: actual_vs_reported_clicks_pct
         meta:
           dimension:
@@ -49,38 +100,49 @@ models:
             type: number
             hidden: yes
           metrics:
-            total_actual_vs_reported_clicks_pct:
-              type: sum
-              label: "Total Actual Vs Reported Clicks Pct"
             avg_actual_vs_reported_clicks_pct:
               type: average
               label: "Average Actual Vs Reported Clicks Pct"
-      - name: total_reported_cost
+      - name: reported_spend_local_currency
         meta:
           dimension:
-            label: "Total Reported Cost"
+            label: "Total Reported Spend Local Currency"
             type: number
             hidden: yes
           metrics:
-            total_total_reported_cost:
+            total_total_reported_cost_local:
               type: sum
-              label: "Total Total Reported Cost"
-            avg_total_reported_cost:
-              type: average
-              label: "Average Total Reported Cost"
-      - name: reported_cpc
+              label: "Total Spend Local Currency"
+      - name: reported_spend_global_currency
         meta:
           dimension:
-            label: "Reported Cpc"
+            label: "Total Reported Spend Local Currency"
             type: number
             hidden: yes
           metrics:
-            total_reported_cpc:
+            total_total_reported_cost_global:
               type: sum
-              label: "Total Reported Cpc"
+              label: "Total Spend"
+      - name: reported_cpc_global_currency
+        meta:
+          dimension:
+            label: "Reported CPC Global Currency"
+            type: number
+            hidden: yes
+          metrics:
             avg_reported_cpc:
               type: average
-              label: "Average Reported Cpc"
+              label: "Average Reported CPC"
+      - name: reported_cpc_local_currency
+        meta:
+          dimension:
+            label: "Reported Cpc Local Currency"
+            type: number
+            hidden: yes
+          metrics:
+            avg_reported_cpc:
+              type: average
+              label: "Average Reported Cpc Local Currency"
       - name: reported_ctr
         meta:
           dimension:
@@ -88,38 +150,9 @@ models:
             type: number
             hidden: yes
           metrics:
-            total_reported_ctr:
-              type: sum
-              label: "Total Reported Ctr"
             avg_reported_ctr:
               type: average
               label: "Average Reported Ctr"
-      - name: actual_ctr
-        meta:
-          dimension:
-            label: "Actual Ctr"
-            type: number
-            hidden: yes
-          metrics:
-            total_actual_ctr:
-              type: sum
-              label: "Total Actual Ctr"
-            avg_actual_ctr:
-              type: average
-              label: "Average Actual Ctr"
-      - name: reported_cpm
-        meta:
-          dimension:
-            label: "Reported Cpm"
-            type: number
-            hidden: yes
-          metrics:
-            total_reported_cpm:
-              type: sum
-              label: "Total Reported Cpm"
-            avg_reported_cpm:
-              type: average
-              label: "Average Reported Cpm"
 
 
 
@@ -1083,3 +1116,14 @@ models:
           avg_duration_in_s:
             type: average
             label: "Average Duration In S"
+
+  - name: wh_ad_spend_roi_fact
+    meta:
+      label: "Ad Spend Roi Fact"
+    columns:
+      - name: campaign_ts
+        meta:
+          dimension:
+            label: "Campaign Ts"
+            type: timestamp
+            time_intervals: default
