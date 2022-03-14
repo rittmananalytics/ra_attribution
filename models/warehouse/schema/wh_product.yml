@@ -447,6 +447,7 @@ models:
             total_last_paid_click_first_order_revenue:
               type: sum
               label: "Last Paid Click First Order Revenue"
+
       - name: first_order_even_click_attrib_revenue
         meta:
           dimension:
@@ -1403,6 +1404,7 @@ models:
             total_last_paid_click_first_order_revenue:
               type: sum
               label: "Last Paid Click First Order Revenue"
+              
       - name: first_order_even_click_attrib_revenue
         meta:
           dimension:
