@@ -1049,7 +1049,7 @@ models:
         meta:
           dimension:
             label: "Session ID"
-            type: timestamp
+            type: string
             hidden: no
           metrics:
             total_sessions:
