@@ -546,3 +546,89 @@ models:
             total_time_decay_repeat_order_revenue:
               type: sum
               label: "Time Decay Repeat Order Revenue"
+
+- name: wh_web_sessions_fact
+  meta:
+    label: "Web Sessions Fact"
+  columns:
+    - name: session_end_ts
+      meta:
+        dimension:
+          label: "Session End"
+          type: timestamp
+          time_intervals: default
+    - name: session_start_ts
+      meta:
+        dimension:
+          label: "Session Start"
+          type: timestamp
+          time_intervals: default
+    - name: is_bounced_session
+      meta:
+        dimension:
+          label: "Is Bounced Session"
+          type: boolean
+          hidden: no
+    - name: is_click_id_matched
+      meta:
+        dimension:
+          label: "Is Click Id Matched"
+          type: boolean
+          hidden: no
+    - name: mins_between_sessions
+      meta:
+        dimension:
+          label: "Mins Between Sessions"
+          type: number
+          hidden: no
+    - name: events
+      meta:
+        dimension:
+          label: "Events"
+          type: number
+          hidden: no
+    - name: duration_in_s
+      meta:
+        dimension:
+          label: "Duration In S"
+          type: number
+          hidden: no
+    - name: mins_between_sessions
+      meta:
+        dimension:
+          label: "Mins Between Sessions"
+          type: number
+          hidden: no
+        metrics:
+          total_mins_between_sessions:
+            type: sum
+            label: "Total Mins Between Sessions"
+          avg_mins_between_sessions:
+            type: average
+            label: "Average Mins Between Sessions"
+    - name: events
+      meta:
+        dimension:
+          label: "Events"
+          type: number
+          hidden: no
+        metrics:
+          total_events:
+            type: sum
+            label: "Total Events"
+          avg_events:
+            type: average
+            label: "Average Events"
+    - name: duration_in_s
+      meta:
+        dimension:
+          label: "Duration In S"
+          type: number
+          hidden: no
+        metrics:
+          total_duration_in_s:
+            type: sum
+            label: "Total Duration In S"
+          avg_duration_in_s:
+            type: average
+            label: "Average Duration In S"
