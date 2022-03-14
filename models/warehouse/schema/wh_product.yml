@@ -381,87 +381,147 @@ models:
             label: "Total First Click Repeat Orders"
             type: number
             hidden: no
+        metrics:
+          total_first_click_repeat_orders:
+            type: sum
+            label: "First Click Repeat Orders"
       - name: repeat_order_first_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "Total First Non-Direct Click Repeat Orders"
             type: number
-            hidden: no
+            hidden: yes
+        metrics:
+          total_first_non_direct_click_repeat_orders:
+            type: sum
+            label: "First Non-Direct Click Repeat Orders"
       - name: repeat_order_last_click_attrib_conversions
         meta:
           dimension:
-            label: "Total First Last Click Repeat Orders"
+            label: "Total Last Click Repeat Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_click_repeat_orders:
+            type: sum
+            label: "Last Click Repeat Orders"
       - name: repeat_order_last_non_direct_click_attrib_conversions
         meta:
           dimension:
             label: "Total Last Non-Direct Click Repeat Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_non_direct_click_repeat_orders:
+            type: sum
+            label: "Last Non-Direct Click Repeat Orders"
       - name: repeat_order_last_paid_click_attrib_conversions
         meta:
           dimension:
             label: "Total Last Paid Click Repeat Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_paid_click_repeat_orders:
+            type: sum
+            label: "Last Non Paid Click Repeat Orders"
       - name: repeat_order_even_click_attrib_conversions
         meta:
           dimension:
             label: "Total Even Click Repeat Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_even_click_repeat_orders:
+            type: sum
+            label: "Last Non Paid Click Repeat Orders"
       - name: repeat_order_time_decay_attrib_conversions
         meta:
           dimension:
             label: "Total Time Decay Repeat Orders"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_time_decay_repeat_orders:
+            type: sum
+            label: "Time Decay Repeat Orders"
       - name: repeat_order_first_click_attrib_revenue
         meta:
           dimension:
             label: "Total First Click Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_click_repeat_order_revenue:
+            type: sum
+            label: "First Click Repeat Order Revenue"
       - name: repeat_order_first_non_direct_click_attrib_revenue
         meta:
           dimension:
             label: "Total First Non-Direct Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_non_direct_click_repeat_order_revenue:
+            type: sum
+            label: "First Non-Direct Click Repeat Order Revenue"
       - name: repeat_order_first_paid_click_attrib_revenue
         meta:
           dimension:
             label: "Total First Paid Click Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_first_paid_click_repeat_order_revenue:
+            type: sum
+            label: "First Paid Click Repeat Order Revenue"
       - name: repeat_order_last_click_attrib_revenue
         meta:
           dimension:
             label: "Total Last Click Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_click_repeat_order_revenue:
+            type: sum
+            label: "Last Click Repeat Order Revenue"
       - name: repeat_order_last_non_direct_click_attrib_revenue
         meta:
           dimension:
             label: "Total Last Non-Direct Click Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_non_direct_click_repeat_order_revenue:
+            type: sum
+            label: "Last Non-Direct Click Repeat Order Revenue"
       - name: repeat_order_last_paid_click_attrib_revenue
         meta:
           dimension:
             label: "Total Last Paid Click Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_last_paid_click_repeat_order_revenue:
+            type: sum
+            label: "Last Paid Click Repeat Order Revenue"
       - name: repeat_order_even_click_attrib_revenue
         meta:
           dimension:
             label: "Total Even Click Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_even_click_repeat_order_revenue:
+            type: sum
+            label: "Even Click Repeat Order Revenue"
       - name: repeat_order_time_decay_attrib_revenue
         meta:
           dimension:
             label: "Total Time Decay Repeat Order Revenue"
             type: number
-            hidden: no
+            hidden: yes
+          metrics:
+            total_time_decay_repeat_order_revenue:
+            type: sum
+            label: "Time Decay Repeat Order Revenue"
