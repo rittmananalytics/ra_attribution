@@ -981,12 +981,6 @@ models:
           label: "Is Click Id Matched"
           type: boolean
           hidden: no
-    - name: mins_between_sessions
-      meta:
-        dimension:
-          label: "Mins Between Sessions"
-          type: number
-          hidden: no
     - name: events
       meta:
         dimension:
@@ -1009,9 +1003,6 @@ models:
           total_mins_between_sessions:
             type: sum
             label: "Total Mins Between Sessions"
-          avg_mins_between_sessions:
-            type: average
-            label: "Average Mins Between Sessions"
     - name: web_sessions_pk
       meta:
         dimension:
@@ -1164,6 +1155,7 @@ models:
           avg_duration_in_s:
             type: average
             label: "Average Duration In S"
+            
 
 - name: wh_attribution_fact
   meta:
