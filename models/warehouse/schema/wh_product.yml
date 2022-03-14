@@ -4,6 +4,8 @@ models:
 
 
   - name: wh_attribution_fact
+    meta:
+        label: "Attribution"
     columns:
       - name: blended_user_id
         description: The custom user ID for each user, identity-stitched using the user's logged-in and unauthenticated sessions.
@@ -34,8 +36,8 @@ models:
       - name: session_seq
         meta:
           dimension:
-            label: "Session Sequence Number"
-            type: timestamp
+            label: "Session Order"
+            type: number
             hidden: no
         description: Sequence number of the user's sessions, starting at 1
       - name: conversion_session
@@ -123,21 +125,21 @@ models:
         description: Sequence number of the user's account opening conversion cycle. Should contain either a 0 (the user has never opened an account within the timeframe of this dbt model's data extract) or 1 (the session is one that leads-up to or includes the account opening event)
         meta:
           dimension:
-            label: "User Registration Conversion Cycle"
+            label: "Registration Conversion Cycle"
             type: number
             hidden: no
       - name: user_first_order_conversion_cycle
         description: Sequence number of the user's first order conversion cycle. Should contain either a 0 (the user has never placed an order within the timeframe of this dbt model's data extract) or 1 (the session is one that leads-up to or includes the first order conversion event)
         meta:
           dimension:
-            label: "User First Order Conversion Cycle"
+            label: "First Order Conversion Cycle"
             type: number
             hidden: no
       - name: user_repeat_order_conversion_cycle
         description: Sequence number of the user's repeat order conversion cycle. Should contain either a 0 (the user has never placed an repeat order within the timeframe of this dbt model's data extract) or any number greater than 0 (the session is one that leads-up to or includes the repeat order conversion event for that repeat order conversion cycle)
         meta:
           dimension:
-            label: "User Repeat Order Conversion Cycle"
+            label: "Repeat Order Conversion Cycle"
             type: number
             hidden: no
       - name: count_repeat_order_conversions
