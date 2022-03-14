@@ -557,10 +557,6 @@ models:
             label: "Event"
             type: timestamp
             time_intervals: default
-
-  - name: web_event_pk
-    meta:
-    columns:
       - name: web_event_pk
         meta:
           dimension:
