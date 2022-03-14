@@ -998,11 +998,8 @@ models:
           hidden: yes
         metrics:
           total_events:
-            type: sum
+            type: count_distinct
             label: "Total Events"
-          avg_events:
-            type: average
-            label: "Average Events"
     - name: duration_in_s
       meta:
         dimension:
