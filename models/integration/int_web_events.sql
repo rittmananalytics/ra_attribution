@@ -95,7 +95,7 @@ lagged as (
         *,
 
         lag(event_ts) over (
-            partition by visitor_id
+            partition by visitor_id,site
             order by event_number
           ) as previous_event_ts
 
@@ -170,7 +170,7 @@ session_ids AS (
   device,
   device_category,
   site,
-    coalesce(session_id,md5(CONCAT(CONCAT(visitor_id::varchar,'-'),coalesce(session_number::varchar,''::varchar)))) as session_id,
+    coalesce(session_id,md5(CONCAT(visitor_id::varchar,'-',session_number::varchar,'-'::varchar,site))) as session_id,
     coalesce(session_type,'SESSIONIZED') as session_type,
   order_id,
   total_revenue_global_currency,
