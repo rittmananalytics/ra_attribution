@@ -1343,7 +1343,7 @@ models:
             total_even_click_orders:
               type: sum
               label: "Last Even Click First Orders"
-      - name: first_order_first_click_attrib_revenue
+      - name: first_order_total_revenue_global_currency_first_click_attrib
         meta:
           dimension:
             label: "Total First Click First Order Revenue"
@@ -1353,7 +1353,7 @@ models:
             total_first_click_order_revenue:
               type: sum
               label: "First Click First Order Revenue"
-      - name: first_order_first_non_direct_click_attrib_revenue
+      - name: first_order_total_revenue_global_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "Total First Non-Direct Click First Order Revenue"
@@ -1363,7 +1363,7 @@ models:
             total_first_non_direct_click_order_revenue:
               type: sum
               label: "First Non-Direct Click First Order Revenue"
-      - name: first_order_first_paid_click_attrib_revenue
+      - name: first_order_total_revenue_global_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "Total First Paid Click First Order Revenue"
@@ -1373,7 +1373,7 @@ models:
             total_first_paid_click_first_order_revenue:
               type: sum
               label: "First Paid Click First Order Revenue"
-      - name: first_order_last_click_attrib_revenue
+      - name: first_order_total_revenue_global_currency_last_click_attrib
         meta:
           dimension:
             label: "Total Last Click First Order Revenue"
@@ -1383,7 +1383,7 @@ models:
             total_last_click_first_order_revenue:
               type: sum
               label: "Last Last Click First Order Revenue"
-      - name: first_order_last_non_direct_click_attrib_revenue
+      - name: first_order_total_revenue_global_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "Total Last Non-Direct Click First Order Revenue"
@@ -1394,7 +1394,7 @@ models:
               type: sum
               label: "Last Non-Direct Click First Order Revenue"
 
-      - name: first_order_last_paid_click_attrib_revenue
+      - name: first_order_total_revenue_global_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "Total Last Paid Click First Order Revenue"
@@ -1405,7 +1405,7 @@ models:
               type: sum
               label: "Last Paid Click First Order Revenue"
 
-      - name: first_order_even_click_attrib_revenue
+      - name: first_order_total_revenue_global_currency_even_click_attrib
         meta:
           dimension:
             label: "Total Even Click First Order Revenue"
@@ -1415,7 +1415,16 @@ models:
             total_even_click_first_order_revenue:
               type: sum
               label: "Even Click First Order Revenue"
-
+      - name: first_order_total_revenue_global_currency_time_decay_attrib
+        meta:
+          dimension:
+            label: "Total Time Decay First Order Revenue"
+            type: number
+            hidden: yes
+          metrics:
+            total_time_decay_first_order_revenue:
+              type: sum
+              label: "Time Decay First Order Revenue"
       - name: repeat_order_first_click_attrib_conversions
         meta:
           dimension:
@@ -1486,7 +1495,7 @@ models:
             total_time_decay_repeat_orders:
               type: sum
               label: "Time Decay Repeat Orders"
-      - name: repeat_order_first_click_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_first_click_attrib
         meta:
           dimension:
             label: "Total First Click Repeat Order Revenue"
@@ -1496,7 +1505,7 @@ models:
             total_first_click_repeat_order_revenue:
               type: sum
               label: "First Click Repeat Order Revenue"
-      - name: repeat_order_first_non_direct_click_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_first_non_direct_click_attrib
         meta:
           dimension:
             label: "Total First Non-Direct Repeat Order Revenue"
@@ -1506,7 +1515,7 @@ models:
             total_first_non_direct_click_repeat_order_revenue:
               type: sum
               label: "First Non-Direct Click Repeat Order Revenue"
-      - name: repeat_order_first_paid_click_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_first_paid_click_attrib
         meta:
           dimension:
             label: "Total First Paid Click Repeat Order Revenue"
@@ -1516,7 +1525,7 @@ models:
             total_first_paid_click_repeat_order_revenue:
               type: sum
               label: "First Paid Click Repeat Order Revenue"
-      - name: repeat_order_last_click_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_last_click_attrib
         meta:
           dimension:
             label: "Total Last Click Repeat Order Revenue"
@@ -1526,7 +1535,7 @@ models:
             total_last_click_repeat_order_revenue:
               type: sum
               label: "Last Click Repeat Order Revenue"
-      - name: repeat_order_last_non_direct_click_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_last_non_direct_click_attrib
         meta:
           dimension:
             label: "Total Last Non-Direct Click Repeat Order Revenue"
@@ -1536,7 +1545,7 @@ models:
             total_last_non_direct_click_repeat_order_revenue:
               type: sum
               label: "Last Non-Direct Click Repeat Order Revenue"
-      - name: repeat_order_last_paid_click_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_last_paid_click_attrib
         meta:
           dimension:
             label: "Total Last Paid Click Repeat Order Revenue"
@@ -1546,7 +1555,7 @@ models:
             total_last_paid_click_repeat_order_revenue:
               type: sum
               label: "Last Paid Click Repeat Order Revenue"
-      - name: repeat_order_even_click_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_even_click_attrib
         meta:
           dimension:
             label: "Total Even Click Repeat Order Revenue"
@@ -1556,7 +1565,7 @@ models:
             total_even_click_repeat_order_revenue:
               type: sum
               label: "Even Click Repeat Order Revenue"
-      - name: repeat_order_time_decay_attrib_revenue
+      - name: repeat_order_total_revenue_global_currency_time_decay_attrib
         meta:
           dimension:
             label: "Total Time Decay Repeat Order Revenue"
