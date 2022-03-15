@@ -999,13 +999,9 @@ models:
     - name: events
       meta:
         dimension:
-          label: "Events"
+          label: "Total Events"
           type: number
-          hidden: yes
-        metrics:
-          total_events:
-            type: count_distinct
-            label: "Total Events"
+          hidden: no
     - name: duration_in_s
       meta:
         dimension:
