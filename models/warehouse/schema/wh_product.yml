@@ -617,7 +617,7 @@ models:
     meta:
       label: "Events"
       join:
-        sql_on: ${wh_web_events_fact.web_sessions_pk} = ${wh_web_sessions_fact.web_sessions_pk}
+        sql_on: ${wh_web_events_fact.session_id} = ${wh_web_sessions_fact.session_id}
     columns:
       - name: event_ts
         meta:
@@ -767,10 +767,10 @@ models:
             label: "Blended User Id"
             type: string
             hidden: no
-      - name: web_sessions_pk
+      - name: session_id
         meta:
           dimension:
-            label: "Web Sessions Key"
+            label: "Session ID"
             type: string
             hidden: no
       - name: channel
@@ -816,7 +816,7 @@ models:
     meta:
       label: "Sessions"
       join:
-        sql_on: ${wh_web_sessions_fact.web_sessions_pk} = ${wh_web_events_fact.web_sessions_pk}
+        sql_on: ${wh_web_sessions_fact.session_id} = ${wh_web_events_fact.session_id}
     columns:
     - name: session_end_ts
       meta:
@@ -868,6 +868,12 @@ models:
       meta:
         dimension:
           label: "Web Sessions Key"
+          type: string
+          hidden: no
+    - name: session_id
+      meta:
+        dimension:
+          label: "Session ID"
           type: string
           hidden: no
     - name: utm_source
