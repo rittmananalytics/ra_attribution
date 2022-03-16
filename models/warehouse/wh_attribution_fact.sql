@@ -181,11 +181,11 @@ converting_sessions_deduped as
               s.session_end_ts as session_end_ts,
               c.converted_ts as converted_ts,
               c.min_converted_ts as min_converted_ts,
-              sum(c.count_conversions) as count_conversions,
-              sum(c.count_order_conversions) as count_order_conversions,
-              sum(c.count_first_order_conversions) as count_first_order_conversions,
-              sum(c.count_repeat_order_conversions) as count_repeat_order_conversions,
-              sum(c.count_registration_conversions) as count_registration_conversions,
+              coalesce(sum(c.count_conversions),0) as count_conversions,
+              coalesce(sum(c.count_order_conversions),0) as count_order_conversions,
+              coalesce(sum(c.count_first_order_conversions),0) as count_first_order_conversions,
+              coalesce(sum(c.count_repeat_order_conversions),0) as count_repeat_order_conversions,
+              coalesce(sum(c.count_registration_conversions),0) as count_registration_conversions,
               coalesce(case when c.count_conversions >0 then true else false end,false) as conversion_session,
               coalesce(case when c.count_conversions >0 then 1 else 0 end,0) as conversion_event,  --used when calculating the conversion cycle number
               coalesce(case when c.count_order_conversions>0 then 1 else 0 end ,0) as order_conversion_event, --used when calculating the order converion cycle number
@@ -430,7 +430,7 @@ session_attrib_pct as (
 ),
 
 /* Now calculate the actual account opening, first order, repeat order and LTV conversion numbers based on the attribution percentages calculated for the session */
-/* Note - the Max() aggregations may no longer be needed, they are there from when we did a further join to campaigns but that's since been removed from the code */
+/* Max() aggregations are used to find the conversion value that each session-level percentage attribution is then applied to */
 
 
 
@@ -443,7 +443,7 @@ final as (
 
       {% for model in var('attribution_models')  %}
 
-      {{key}} * {{model}}_pct as {{value}}_{{model}}_conversions,
+      (max({{key}}) over ({{user_cycle_partition_by}})* {{model}}_pct) as {{value}}_{{model}}_conversions,
 
       {% endfor %}
 
@@ -453,7 +453,7 @@ final as (
 
       {% for model in var('attribution_models')  %}
 
-      {{key}} * {{model}}_pct as {{value}}_{{model}},
+      (max({{key}}) over ({{user_cycle_partition_by}})* {{model}}_pct) as {{value}}_{{model}},
 
       {% endfor %}
 

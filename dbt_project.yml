@@ -101,7 +101,7 @@ vars:
   attribution_conversion_event_type: confirmed_order # event name for order events
   attribution_global_currency: 'GBP' # currency code for global amounts
   attribution_lookback_days_window : 30  # how far back sessions can go to be eligable for attribution
-  attribution_time_decay_days_window : 7 # over how many days do we decay the value of conversions for time-decay model
+  attribution_time_decay_days_window : 21 # over how many days do we decay the value of conversions for time-decay model
   attribution_include_conversion_session: true # whether the session containing the conversion event is within scope for attribution
   attribution_match_offline_conversions_to_sessions: true # whether orders and registrations are matched to Snowplow sessions or not
   attribution_max_session_hours: 24 # maximum length of a session in hours to be considered for matching purposes

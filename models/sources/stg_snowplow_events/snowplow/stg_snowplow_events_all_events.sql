@@ -55,7 +55,7 @@ with
         when page_url ilike '%fbclid%'
             and (rlike(referer_url_host,'.*(instagram|facebook).*','i') or referer_url_host is null)
         then 'paid social'
-        when referer_url_host ilike '%snapchat%' or rlike(marketing_source,'.*(snap).*','i')
+        when referer_url_host ilike '%snapchat%' or referer_url_host ilike '%facebook%'or rlike(marketing_source,'.*(snap).*','i')
         then 'paid social'
 
         -- organic social:
