@@ -27,12 +27,6 @@ The attribution model within this package is a multi-cycle, multi-touch revenue 
 
 - Lightdash is supported out-of-the-box through metrics, dimensions, tables and joins definitions in the dbt package, and other BI tools e.g. Looker are compatible but require manual configuration
 
-
-
-### Warning!
-
-Whilst this package is tested and works, it should really be considered as example code and designed primarily to support our own client projects, rather than immediately applicable and usable for any attribution scenario. As such it has only limited documentation (as of now), has not been tested beyond the scenarios and projects we have used it for on client projects, comes with no warranty or guarantees and should be used at your own risk - and of course we would be more than happy to extend and customize it for your organization as part of a regular (billable) client engagement - [contact us now](https://calendly.com/markrittman/30min/?/?) to speak to us if this would be of interest to you.
-
 ### Lightdash Metrics Layer
 
 This package also includes support for Lightdash, an open-source BI tool that provides Looker-like self-service ad-hoc querying and dashboarding and uses dbt to define and store its metrics layer in the form of extensions to the warehouse table definitions in the project's [schema.yml](models/warehouse/schema/schema.yml) file.
@@ -46,8 +40,6 @@ Lightdash metrics layer definitions included in this package include:
 - Ad Performance (Ad spend, clicks and impressions comparing data from ad networks with observed data from Snowplow, Segment and/or Rudderstack)
 - Sessions (Segment, Snowplow, Rudderstack and/or offline transaction data sessionized, including sessions not leading to a conversion)
 - Events (Segment, Snowplow, Rudderstack and/or offline transaction events including those not leading to a conversion)
-
-
 
 ### Account Opening, First and Repeat Order Conversion Cycles
 
@@ -126,6 +118,8 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Repeat Order Conversion, Repeat Order Revenue | Conversion event, for which there may be none, one or more than one over the lifetime of a user, containing one or more confirmed orders for a user that are not the first confirmed order for that user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 
 ### How to Run this Package
+
+Note - whilst this package is tested and works, it should really be considered as example code and designed primarily to support our own client projects, rather than immediately applicable and usable for any attribution scenario. As such it has only limited documentation (as of now), has not been tested beyond the scenarios and projects we have used it for on client projects, comes with no warranty or guarantees and should be used at your own risk - and of course we would be more than happy to extend and customize it for your organization as part of a regular (billable) client engagement - [contact us now](https://calendly.com/markrittman/30min/?/?) to speak to us if this would be of interest to you.
 
 1.  Clone or Fork this repo to create your own copy to work with
 
