@@ -4,13 +4,29 @@ This dbt package provides a multi-touch, multi-cycle marketing attribution model
 
 ## Supported Data Sources and Warehouse Target
 
-The package assumes that orders and user registrations along with customer LTV measures and currency FX rates come from tables replicated from a customer application database, and marketing touchpoints are sourced from Snowplow, Segment, Rudderstack, Heap and/or GA4. Ad Spend data comes via Fivetran from Google Ads, Facebook Ads and Snapchat Ads, as shown in the high-level data flow diagram below.
+Snowplow, Segment and Rudderstack are supported as event sources for customer marketing touchpoints (page views and other user events, typically containing UTM parameter, referrer URLs and other marketing source identifiers) and conversion events (account opening, checkout events etc).
+
+Orders and user registrations (account openings) can also be sourced, along with LTV and currency FX rates data, from your customer application database.
+
+Google Ads, Facebook Ads and/or Snapchat Ads, via Fivetran, are currently supported as ad spend and performance data sources; credit and thanks are given to Fivetran for their community-released Google Ads, Facebook Ads and Snapchat Ads dbt modules for Ad Reporting, the code for which has in some cases been incorporated into this similarly open-sourced dbt package. Thanks Dylan and the rest of the Fivetran team!
 
 ![](img/solution_architecture.png)
 
 Whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, the target data warehouse platform is assumed to be Snowflake and this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
 
-Credit is also due to Fivetran for their community-released Google Ads, Facebook Ads and Snapchat Ads dbt modules from which functionality and code has been incorporated into this package.
+## Lightdash Metrics Layer
+
+This package also includes support for Lightdash, an open-source BI tool that provides Looker-like self-service ad-hoc querying and dashboarding and uses dbt to define and store its metrics layer in the form of extensions to the warehouse table definitions in the project's [schema.yml](models/warehouse/schema/schema.yml) file.
+
+![](img/lightdash.png)
+
+Lightdash metrics layer definitions included in this package include:
+
+- Revenue Attribution (user registration, first and repeat orders / revenue, in local and global currencies, across all channels)
+- Ad Spend RoI (Ad spend, clicks and impressions for ad channels along with revenue, orders and new users attributed to those channels)
+- Ad Performance (Ad spend, clicks and impressions comparing data from ad networks with observed data from Snowplow, Segment and/or Rudderstack)
+- Sessions (Segment, Snowplow, Rudderstack and/or offline transaction data sessionized, including sessions not leading to a conversion)
+- Events (Segment, Snowplow, Rudderstack and/or offline transaction events including those not leading to a conversion)
 
 ### Dependencies
 
@@ -24,14 +40,17 @@ Credit is also due to Fivetran for their community-released Google Ads, Facebook
 
 *   Fivetran for Google Ads, Facebook Ads and Snapchat Ads API replication
 
-*   One or more of either Snowplow, Google Analytics 4, Heap, Segment or Rudderstack
+*   One or more of either Snowplow, Segment or Rudderstack for marketing touchpoints and optionally, orders and account opening events 
 
 *   Orders, Order Lines, User, Currency Rates and Customer LTV table extracts from your custom app database
 
+*   (Optional) Lightdash
 
 ### How to Run this Package
 
-1.  Configure Fivetran to replicate your Facebook Ads, Google Ads and/or Snapchat Ads data into your Snowflake Data Warehouse
+1.  Clone or Fork this repo to create your own copy to work with
+
+2.  Configure Fivetran to replicate your Facebook Ads, Google Ads and/or Snapchat Ads data into your Snowflake Data Warehouse
 
 2.  Configure Fivetran to replicate your Orders, Order Details, Users, Currency Conversion Rates and Customer Lifetime Value tables also into Snowflake, and map the columns in your incoming tables to the expected columns in the STG\_CUSTOM\_EVENTS\_ORDER\_EVENTS, STG\_CUSTOM\_EVENTS\_REGISTRATION\_EVENTS, STG\_CUSTOM\_LTV\_CUSTOMER\_LTV and STG\_CURRENCY\_RATES dbt models
 
@@ -41,6 +60,7 @@ Credit is also due to Fivetran for their community-released Google Ads, Facebook
 
 4.  Run the package using `dbt build`.
 
+5.  Optionally, provision a [self-hosted](https://github.com/lightdash/lightdash#quick-start) or [cloud-hosted] Lightdash instance and configure it to use the git repo used to host your copy of this project as its metrics layer. 
 
 ### DAG Lineage Graphs
 
@@ -130,3 +150,16 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Account Opening | Conversion event, one only over the lifetime of a user, containing the user’s registration event; may also contain marketing and non-marketing touchpoints, and a first order | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | First Order Conversion, First Order Revenue | Conversion event, one only over the lifetime of a user, containing the first confirmed order for a user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | Repeat Order Conversion, Repeat Order Revenue | Conversion event, for which there may be none, one or more than one over the lifetime of a user, containing one or more confirmed orders for a user that are not the first confirmed order for that user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
+
+### Further Reading
+
+- [Marketing Attribution Services from Rittman Analytics](https://rittmananalytics.com/marketing-attribution)
+- [Multi-Channel Marketing Attribution using Segment, Google BigQuery, dbt and Looker](https://rittmananalytics.com/blog/2020/2/8/multichannel-attribution-bigquery-dbt-looker-segment)
+- [Ad Spend and Campaign RoI Analytics using Segment, Looker, dbt and Google BigQuery](https://rittmananalytics.com/blog/2020/9/20/ad-spend-and-campaign-roi-analytics-using-segment-looker-dbt-and-googlenbspbigquery)
+- [Lightdash, Looker and dbt as the BI Tool Metrics Layer](https://rittmananalytics.com/blog/2022/2/1/lightdash-looker-and-dbt-as-the-bi-tool-metrics-layer) and [Drill to Detail Podcast Episode with Katie Hindson](https://rittmananalytics.com/drilltodetail/2022/3/9/ircr55naz1h3dmzirywg8m28y239ca)
+
+### Interested? Find out More
+
+Rittman Analytics is a boutique analytics consultancy specializing in the modern data stack who can get you started with [Looker](https://rittmananalytics.com/data-analytics-main) (and Lightdash!), [centralise your data sources](https://rittmananalytics.com/data-centralization) and [enable your end-users and data team](https://rittmananalytics.com/data-team-enablement) with best practices and a [modern analytics workflow](https://rittmananalytics.com/getting-started-with-dbt).
+
+If you’re looking for some help and assistance building-out your analytics capabilities on a modern, flexible and modular data stack, [contact us now](https://calendly.com/markrittman/30min/?/?) to organize a 100%-free, no-obligation call — we’d love to hear from you!
