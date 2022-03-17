@@ -60,7 +60,7 @@ Lightdash metrics layer definitions included in this package include:
 
 4.  Run the package using `dbt build`.
 
-5.  Optionally, provision a [self-hosted](https://github.com/lightdash/lightdash#quick-start) or [cloud-hosted] Lightdash instance and configure it to use the git repo used to host your copy of this project as its metrics layer. 
+5.  Optionally, provision a [self-hosted](https://github.com/lightdash/lightdash#quick-start) or [hosted-by Lightdash](https://lightdash.typeform.com/to/HFlicx4i?typeform-source=www.lightdash.com#source=website) Lightdash instance and configure it to use the git repo used to host your copy of this project as its metrics layer. 
 
 ### DAG Lineage Graphs
 
