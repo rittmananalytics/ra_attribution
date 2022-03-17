@@ -4,15 +4,17 @@ This dbt package provides a multi-touch, multi-cycle marketing attribution model
 
 ## Supported Data Sources and Warehouse Target
 
-Snowplow, Segment and Rudderstack are supported as event sources for customer marketing touchpoints (page views and other user events, typically containing UTM parameter, referrer URLs and other marketing source identifiers) and conversion events (account opening, checkout events etc).
+- Snowplow, Segment and Rudderstack are supported as event sources for customer marketing touchpoints (page views and other user events, typically containing UTM parameter, referrer URLs and other marketing source identifiers) and conversion events (account opening, checkout events etc).
 
-Orders and user registrations (account openings) can also be sourced, along with LTV and currency FX rates data, from your customer application database.
+- Orders and user registrations (account openings) can also be sourced, along with LTV and currency FX rates data, from your customer application database.
 
-Google Ads, Facebook Ads and/or Snapchat Ads, via Fivetran, are currently supported as ad spend and performance data sources; credit and thanks are given to Fivetran for their community-released Google Ads, Facebook Ads and Snapchat Ads dbt modules for Ad Reporting, the code for which has in some cases been incorporated into this similarly open-sourced dbt package. Thanks Dylan and the rest of the Fivetran team!
+- Google Ads, Facebook Ads and/or Snapchat Ads, via Fivetran, are currently supported as ad spend and performance data sources; credit and thanks are given to Fivetran for their community-released Google Ads, Facebook Ads and Snapchat Ads dbt modules for Ad Reporting, the code for which has in some cases been incorporated into this similarly open-sourced dbt package. Thanks Dylan and the rest of the Fivetran team!
+
+- Snowflake as the warehouse platform; whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
+
+- Lightdash is supported out-of-the-box through metrics, dimensions, tables and joins definitions in the dbt package, and other BI tools e.g. Looker are compatible but require manual configuration
 
 ![](img/solution_architecture.png)
-
-Whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, the target data warehouse platform is assumed to be Snowflake and this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
 
 ### Warning!
 
