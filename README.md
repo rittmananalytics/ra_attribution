@@ -2,7 +2,7 @@
 
 This dbt package provides a multi-touch, multi-cycle marketing attribution model that helps marketers better understand the contribution each online marketing channel makes to order revenue, and the cost and return on investment from ad channel spend that led to those conversions.
 
-![](img/solution_architecture.png)
+![](img/ra_attribution_data_flow.png)
 
 ## Conversion Measures and Currencies
 
@@ -14,13 +14,6 @@ The attribution model within this package is a multi-cycle, multi-touch revenue 
 
 *   customer LTV value (30, 60, 90, 180 and 365 days spend since first order) on first order conversion
 
-![](img/ra_attribution_data_flow.png)
-
-## Account Opening, First and Repeat Order Conversion Cycles
-
-Each conversion has its own conversion cycle with the assumption that account openings and first orders occur once at most for each customer, and repeat orders occur zero or more times.
-
-![](img/multi-cycle_attribution.png|width=796)
 
 ## Supported Data Sources and Warehouse Target
 
@@ -34,7 +27,13 @@ Each conversion has its own conversion cycle with the assumption that account op
 
 - Lightdash is supported out-of-the-box through metrics, dimensions, tables and joins definitions in the dbt package, and other BI tools e.g. Looker are compatible but require manual configuration
 
-## Lightdash Metrics Layer
+
+
+### Warning!
+
+Whilst this package is tested and works, it should really be considered as example code and designed primarily to support our own client projects, rather than immediately applicable and usable for any attribution scenario. As such it has only limited documentation (as of now), has not been tested beyond the scenarios and projects we have used it for on client projects, comes with no warranty or guarantees and should be used at your own risk - and of course we would be more than happy to extend and customize it for your organization as part of a regular (billable) client engagement - [contact us now](https://calendly.com/markrittman/30min/?/?) to speak to us if this would be of interest to you.
+
+### Lightdash Metrics Layer
 
 This package also includes support for Lightdash, an open-source BI tool that provides Looker-like self-service ad-hoc querying and dashboarding and uses dbt to define and store its metrics layer in the form of extensions to the warehouse table definitions in the project's [schema.yml](models/warehouse/schema/schema.yml) file.
 
@@ -47,6 +46,14 @@ Lightdash metrics layer definitions included in this package include:
 - Ad Performance (Ad spend, clicks and impressions comparing data from ad networks with observed data from Snowplow, Segment and/or Rudderstack)
 - Sessions (Segment, Snowplow, Rudderstack and/or offline transaction data sessionized, including sessions not leading to a conversion)
 - Events (Segment, Snowplow, Rudderstack and/or offline transaction events including those not leading to a conversion)
+
+
+
+### Account Opening, First and Repeat Order Conversion Cycles
+
+Each conversion has its own conversion cycle with the assumption that account openings and first orders occur once at most for each customer, and repeat orders occur zero or more times.
+
+![](img/1b8e0612-e9ab-40aa-923b-4d6613c75f6a.png)
 
 ### DAG Lineage Graphs
 
@@ -73,7 +80,7 @@ Lightdash metrics layer definitions included in this package include:
 | Time-Decay | Attributes a percentage of the credit to all the channels on the conversion path for a time-decay period: the amount of credit for each channel is less (decaying) the further back in time the channel was interacted (0.5, 0.25, 0.125 etc) shared across all touchpoints for the day, over a 30-day (default) look-back window and 7-day (default) time-decay look-back window |
 |     |     |
 
-### Package Configuration Variables
+## Package Configuration Variables
 
 All configuration variables are contained with the `dbt_project.yml` dbt configuration file, along with configuration options for the Fivetran Google Ads, Facebook Ads and Snapchat Ads included modules.
 
@@ -107,7 +114,7 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Measures | attribution\_output\_conversion\_measures | _see dbt\_project.yml_ | list of attribution output conversion measures |
 | Measures | attribution\_output\_revenue\_measures | _see dbt\_project.yml_ | list of attribution output revenue measures |
 
-### Glossary
+## Glossary
 
 |     |     |     |
 | --- | --- | --- |
@@ -117,10 +124,6 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Account Opening | Conversion event, one only over the lifetime of a user, containing the user’s registration event; may also contain marketing and non-marketing touchpoints, and a first order | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | First Order Conversion, First Order Revenue | Conversion event, one only over the lifetime of a user, containing the first confirmed order for a user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | Repeat Order Conversion, Repeat Order Revenue | Conversion event, for which there may be none, one or more than one over the lifetime of a user, containing one or more confirmed orders for a user that are not the first confirmed order for that user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
-
-## Warning!
-
-Whilst this package is tested and works, it should really be considered as example code and designed primarily to support our own client projects, rather than immediately applicable and usable for any attribution scenario. As such it has only limited documentation (as of now), has not been tested beyond the scenarios and projects we have used it for on client projects, comes with no warranty or guarantees and should be used at your own risk - and of course we would be more than happy to extend and customize it for your organization as part of a regular (billable) client engagement - contact us now to speak to us if this would be of interest to you.
 
 ### How to Run this Package
 
