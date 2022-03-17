@@ -62,22 +62,7 @@ Lightdash metrics layer definitions included in this package include:
 
 5.  Optionally, provision a [self-hosted](https://github.com/lightdash/lightdash#quick-start) or [cloud-hosted] Lightdash instance and configure it to use the git repo used to host your copy of this project as its metrics layer. 
 
-### Further Reading
-
-- [Marketing Attribution Services from Rittman Analytics](https://rittmananalytics.com/marketing-attribution)
-- [Multi-Channel Marketing Attribution using Segment, Google BigQuery, dbt and Looker](https://rittmananalytics.com/blog/2020/2/8/multichannel-attribution-bigquery-dbt-looker-segment)
-- [Ad Spend and Campaign RoI Analytics using Segment, Looker, dbt and Google BigQuery](https://rittmananalytics.com/blog/2020/9/20/ad-spend-and-campaign-roi-analytics-using-segment-looker-dbt-and-googlenbspbigquery)
-- [Lightdash, Looker and dbt as the BI Tool Metrics Layer](https://rittmananalytics.com/blog/2022/2/1/lightdash-looker-and-dbt-as-the-bi-tool-metrics-layer) and [Drill to Detail Podcast Episode with Katie Hindson](https://rittmananalytics.com/drilltodetail/2022/3/9/ircr55naz1h3dmzirywg8m28y239ca)
-
-### Interested? Find out More
-
-Rittman Analytics is a boutique analytics consultancy specializing in the modern data stack who can get you started with [Looker](https://rittmananalytics.com/data-analytics-main) (and Lightdash!), [centralise your data sources](https://rittmananalytics.com/data-centralization) and [enable your end-users and data team](https://rittmananalytics.com/data-team-enablement) with best practices and a [modern analytics workflow](https://rittmananalytics.com/getting-started-with-dbt).
-
-If you’re looking for some help and assistance building-out your analytics capabilities on a modern, flexible and modular data stack, [contact us now](https://calendly.com/markrittman/30min/?/?) to organize a 100%-free, no-obligation call — we’d love to hear from you!
-
 ### DAG Lineage Graphs
-
-
 
 #### Overall Package Running in Demo Mode
 
@@ -165,3 +150,16 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Account Opening | Conversion event, one only over the lifetime of a user, containing the user’s registration event; may also contain marketing and non-marketing touchpoints, and a first order | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | First Order Conversion, First Order Revenue | Conversion event, one only over the lifetime of a user, containing the first confirmed order for a user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | Repeat Order Conversion, Repeat Order Revenue | Conversion event, for which there may be none, one or more than one over the lifetime of a user, containing one or more confirmed orders for a user that are not the first confirmed order for that user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
+
+### Further Reading
+
+- [Marketing Attribution Services from Rittman Analytics](https://rittmananalytics.com/marketing-attribution)
+- [Multi-Channel Marketing Attribution using Segment, Google BigQuery, dbt and Looker](https://rittmananalytics.com/blog/2020/2/8/multichannel-attribution-bigquery-dbt-looker-segment)
+- [Ad Spend and Campaign RoI Analytics using Segment, Looker, dbt and Google BigQuery](https://rittmananalytics.com/blog/2020/9/20/ad-spend-and-campaign-roi-analytics-using-segment-looker-dbt-and-googlenbspbigquery)
+- [Lightdash, Looker and dbt as the BI Tool Metrics Layer](https://rittmananalytics.com/blog/2022/2/1/lightdash-looker-and-dbt-as-the-bi-tool-metrics-layer) and [Drill to Detail Podcast Episode with Katie Hindson](https://rittmananalytics.com/drilltodetail/2022/3/9/ircr55naz1h3dmzirywg8m28y239ca)
+
+### Interested? Find out More
+
+Rittman Analytics is a boutique analytics consultancy specializing in the modern data stack who can get you started with [Looker](https://rittmananalytics.com/data-analytics-main) (and Lightdash!), [centralise your data sources](https://rittmananalytics.com/data-centralization) and [enable your end-users and data team](https://rittmananalytics.com/data-team-enablement) with best practices and a [modern analytics workflow](https://rittmananalytics.com/getting-started-with-dbt).
+
+If you’re looking for some help and assistance building-out your analytics capabilities on a modern, flexible and modular data stack, [contact us now](https://calendly.com/markrittman/30min/?/?) to organize a 100%-free, no-obligation call — we’d love to hear from you!
