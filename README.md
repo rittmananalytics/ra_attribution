@@ -1,20 +1,26 @@
-# RA Attribution for dbt
+# RA Attribution for dbt and Lightdash
 
 This dbt package provides a multi-touch, multi-cycle marketing attribution model that helps marketers better understand the contribution each online marketing channel makes to order revenue, and the cost and return on investment from ad channel spend that led to those conversions.
 
 ## Supported Data Sources and Warehouse Target
 
-Snowplow, Segment and Rudderstack are supported as event sources for customer marketing touchpoints (page views and other user events, typically containing UTM parameter, referrer URLs and other marketing source identifiers) and conversion events (account opening, checkout events etc).
+- Snowplow, Segment and Rudderstack are supported as event sources for customer marketing touchpoints (page views and other user events, typically containing UTM parameter, referrer URLs and other marketing source identifiers) and conversion events (account opening, checkout events etc).
 
-Orders and user registrations (account openings) can also be sourced, along with LTV and currency FX rates data, from your customer application database.
+- Orders and user registrations (account openings) can also be sourced, along with LTV and currency FX rates data, from your customer application database.
 
-Google Ads, Facebook Ads and/or Snapchat Ads, via Fivetran, are currently supported as ad spend and performance data sources; credit and thanks are given to Fivetran for their community-released Google Ads, Facebook Ads and Snapchat Ads dbt modules for Ad Reporting, the code for which has in some cases been incorporated into this similarly open-sourced dbt package. Thanks Dylan and the rest of the Fivetran team!
+- Google Ads, Facebook Ads and/or Snapchat Ads, via Fivetran, are currently supported as ad spend and performance data sources; credit and thanks are given to Fivetran for their community-released Google Ads, Facebook Ads and Snapchat Ads dbt modules for Ad Reporting, the code for which has in some cases been incorporated into this similarly open-sourced dbt package. Thanks Dylan and the rest of the Fivetran team!
+
+- Snowflake as the warehouse platform; whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
+
+- Lightdash is supported out-of-the-box through metrics, dimensions, tables and joins definitions in the dbt package, and other BI tools e.g. Looker are compatible but require manual configuration
 
 ![](img/solution_architecture.png)
 
-Whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, the target data warehouse platform is assumed to be Snowflake and this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
+### Warning!
 
-## Lightdash Metrics Layer
+Whilst this package is tested and works, it should really be considered as example code and designed primarily to support our own client projects, rather than immediately applicable and usable for any attribution scenario. As such it has only limited documentation (as of now), has not been tested beyond the scenarios and projects we have used it for on client projects, comes with no warranty or guarantees and should be used at your own risk - and of course we would be more than happy to extend and customize it for your organization as part of a regular (billable) client engagement - [contact us now](https://calendly.com/markrittman/30min/?/?) to speak to us if this would be of interest to you.
+
+### Lightdash Metrics Layer
 
 This package also includes support for Lightdash, an open-source BI tool that provides Looker-like self-service ad-hoc querying and dashboarding and uses dbt to define and store its metrics layer in the form of extensions to the warehouse table definitions in the project's [schema.yml](models/warehouse/schema/schema.yml) file.
 
@@ -28,39 +34,21 @@ Lightdash metrics layer definitions included in this package include:
 - Sessions (Segment, Snowplow, Rudderstack and/or offline transaction data sessionized, including sessions not leading to a conversion)
 - Events (Segment, Snowplow, Rudderstack and/or offline transaction events including those not leading to a conversion)
 
-### Dependencies
+## Conversion Measures and Currencies
 
-*   dbt core 1.0.1 or higher
+The attribution model within this package is a multi-cycle, multi-touch revenue attribution model that attributes
 
-    *   dbt\_utils 0.8.0 or higher
+*   new account openings,
 
-    *   fivetran\_utils 0.3.2 or higher
+*   count and local/global currency value of first and repeat orders
 
-*   Snowflake data warehouse
+*   customer LTV value (30, 60, 90, 180 and 365 days spend since first order) on first order conversion
 
-*   Fivetran for Google Ads, Facebook Ads and Snapchat Ads API replication
+### Account Opening, First and Repeat Order Conversion Cycles
 
-*   One or more of either Snowplow, Segment or Rudderstack for marketing touchpoints and optionally, orders and account opening events 
+Each conversion has its own conversion cycle with the assumption that account openings and first orders occur once at most for each customer, and repeat orders occur zero or more times.
 
-*   Orders, Order Lines, User, Currency Rates and Customer LTV table extracts from your custom app database
-
-*   (Optional) Lightdash
-
-### How to Run this Package
-
-1.  Clone or Fork this repo to create your own copy to work with
-
-2.  Configure Fivetran to replicate your Facebook Ads, Google Ads and/or Snapchat Ads data into your Snowflake Data Warehouse
-
-2.  Configure Fivetran to replicate your Orders, Order Details, Users, Currency Conversion Rates and Customer Lifetime Value tables also into Snowflake, and map the columns in your incoming tables to the expected columns in the STG\_CUSTOM\_EVENTS\_ORDER\_EVENTS, STG\_CUSTOM\_EVENTS\_REGISTRATION\_EVENTS, STG\_CUSTOM\_LTV\_CUSTOMER\_LTV and STG\_CURRENCY\_RATES dbt models
-
-    1.  Sample data for these models is included as seed files in the package, and the default “true” setting for the `attribution_demo_mode` configuration variable will use these seed file values by default when you run the package
-
-3.  Set the configuration variables in `dbt_project.yml` to point to your Snowflake database and schemas
-
-4.  Run the package using `dbt build`.
-
-5.  Optionally, provision a [self-hosted](https://github.com/lightdash/lightdash#quick-start) or [cloud-hosted] Lightdash instance and configure it to use the git repo used to host your copy of this project as its metrics layer. 
+![](img/1b8e0612-e9ab-40aa-923b-4d6613c75f6a.png)
 
 ### DAG Lineage Graphs
 
@@ -86,24 +74,6 @@ Lightdash metrics layer definitions included in this package include:
 | Even Click | Attributes evenly a share of each first order, subsequent order and account opening to each touchpoint  over a 30-day (default) look-back window |
 | Time-Decay | Attributes a percentage of the credit to all the channels on the conversion path for a time-decay period: the amount of credit for each channel is less (decaying) the further back in time the channel was interacted (0.5, 0.25, 0.125 etc) shared across all touchpoints for the day, over a 30-day (default) look-back window and 7-day (default) time-decay look-back window |
 |     |     |
-
-## Conversion Measures and Currencies
-
-The attribution model within this package is a multi-cycle, multi-touch revenue attribution model that attributes
-
-*   new account openings,
-
-*   count and local/global currency value of first and repeat orders
-
-*   customer LTV value (30, 60, 90, 180 and 365 days spend since first order) on first order conversion
-
-
-## Account Opening, First and Repeat Order Conversion Cycles
-
-Each conversion has its own conversion cycle with the assumption that account openings and first orders occur once at most for each customer, and repeat orders occur zero or more times.
-
-![](img/1b8e0612-e9ab-40aa-923b-4d6613c75f6a.png)
-
 
 ## Package Configuration Variables
 
@@ -139,7 +109,6 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Measures | attribution\_output\_conversion\_measures | _see dbt\_project.yml_ | list of attribution output conversion measures |
 | Measures | attribution\_output\_revenue\_measures | _see dbt\_project.yml_ | list of attribution output revenue measures |
 
-
 ## Glossary
 
 |     |     |     |
@@ -150,6 +119,40 @@ All configuration variables are contained with the `dbt_project.yml` dbt configu
 | Account Opening | Conversion event, one only over the lifetime of a user, containing the user’s registration event; may also contain marketing and non-marketing touchpoints, and a first order | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | First Order Conversion, First Order Revenue | Conversion event, one only over the lifetime of a user, containing the first confirmed order for a user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
 | Repeat Order Conversion, Repeat Order Revenue | Conversion event, for which there may be none, one or more than one over the lifetime of a user, containing one or more confirmed orders for a user that are not the first confirmed order for that user | UTM Source, Medium, Campaign etc for the landing page view (first page view in session), or none if the event did not happen within 30 minutes of a web or mobile app session |
+
+### How to Run this Package
+
+1.  Clone or Fork this repo to create your own copy to work with
+
+2.  Configure Fivetran to replicate your Facebook Ads, Google Ads and/or Snapchat Ads data into your Snowflake Data Warehouse
+
+2.  Configure Fivetran to replicate your Orders, Order Details, Users, Currency Conversion Rates and Customer Lifetime Value tables also into Snowflake, and map the columns in your incoming tables to the expected columns in the STG\_CUSTOM\_EVENTS\_ORDER\_EVENTS, STG\_CUSTOM\_EVENTS\_REGISTRATION\_EVENTS, STG\_CUSTOM\_LTV\_CUSTOMER\_LTV and STG\_CURRENCY\_RATES dbt models
+
+    1.  Sample data for these models is included as seed files in the package, and the default “true” setting for the `attribution_demo_mode` configuration variable will use these seed file values by default when you run the package
+
+3.  Set the configuration variables in `dbt_project.yml` to point to your Snowflake database and schemas
+
+4.  Run the package using `dbt build`.
+
+5.  Optionally, provision a [self-hosted](https://github.com/lightdash/lightdash#quick-start) or [hosted-by Lightdash](https://lightdash.typeform.com/to/HFlicx4i?typeform-source=www.lightdash.com#source=website) Lightdash instance and configure it to use the git repo used to host your copy of this project as its metrics layer. 
+
+### Dependencies
+
+*   dbt core 1.0.1 or higher
+
+    *   dbt\_utils 0.8.0 or higher
+
+    *   fivetran\_utils 0.3.2 or higher
+
+*   Snowflake data warehouse
+
+*   Fivetran for Google Ads, Facebook Ads and Snapchat Ads API replication
+
+*   One or more of either Snowplow, Segment or Rudderstack for marketing touchpoints and optionally, orders and account opening events 
+
+*   Orders, Order Lines, User, Currency Rates and Customer LTV table extracts from your custom app database
+
+*   (Optional) Lightdash
 
 ### Further Reading
 
