@@ -20,7 +20,7 @@ The attribution model within this package is a multi-cycle, multi-touch revenue 
 
 Each conversion has its own conversion cycle with the assumption that account openings and first orders occur once at most for each customer, and repeat orders occur zero or more times.
 
-![](img/multi-cycle_attribution.png)
+![](img/multi-cycle_attribution.png|width=796)
 
 ## Supported Data Sources and Warehouse Target
 
