@@ -1,4 +1,4 @@
-# RA Attribution for dbt and Lightdash
+# RA Attribution for dbt
 
 This dbt package provides a multi-touch, multi-cycle marketing attribution model that helps marketers better understand the contribution each online marketing channel makes to order revenue, and the cost and return on investment from ad channel spend that led to those conversions.
 
