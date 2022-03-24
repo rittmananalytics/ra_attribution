@@ -96,8 +96,6 @@ events_filtered as
       event_type,
       order_id,
 
-
-
       {% for measure in var('attribution_input_measures') %}
 
         case when {{first_order_condition}} then {{measure}} else 0 end as first_order_{{measure}},

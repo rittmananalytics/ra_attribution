@@ -16,14 +16,6 @@ with source as (
 renamed as (
   select
     user_id as user_id,
-    ltv_30d_local_currency as ltv_30d_local_currency,
-    ltv_30d_global_currency as ltv_30d_global_currency,
-    ltv_60d_local_currency as ltv_60d_local_currency,
-    ltv_60d_global_currency as ltv_60d_global_currency,
-    ltv_90d_local_currency as ltv_90d_local_currency,
-    ltv_90d_global_currency as ltv_90d_global_currency,
-    ltv_180d_local_currency as ltv_180d_local_currency,
-    ltv_180d_global_currency as ltv_180d_global_currency,
     ltv_365d_local_currency as ltv_365d_local_currency,
     ltv_365d_global_currency as ltv_365d_global_currency
   from source

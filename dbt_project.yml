@@ -113,9 +113,7 @@ vars:
   attribution_models: ['first_click_attrib','first_non_direct_click_attrib','first_paid_click_attrib','last_click_attrib',
                       'last_non_direct_click_attrib','last_paid_click_attrib','even_click_attrib','time_decay_attrib'] # list of model names to be appended to measures
 
-  attribution_input_measures: ['total_revenue_local_currency','total_revenue_global_currency','ltv_30d_local_currency','ltv_30d_global_currency',
-                              'ltv_60d_local_currency','ltv_60d_global_currency','ltv_90d_local_currency','ltv_90d_global_currency',
-                              'ltv_180d_local_currency','ltv_180d_global_currency','ltv_365d_local_currency','ltv_365d_global_currency'] # list of attribution input measures
+  attribution_input_measures: ['total_revenue_local_currency','total_revenue_global_currency','ltv_365d_local_currency','ltv_365d_global_currency'] # list of attribution input measures
 
   attribution_output_conversion_measures: {
                                           "count_registration_conversions" : "user_registration",
@@ -126,13 +124,6 @@ vars:
   attribution_output_revenue_measures: {
                                         "first_order_total_revenue_local_currency" : "first_order_total_revenue_local_currency",
                                         "first_order_total_revenue_global_currency" : "first_order_total_revenue_global_currency",
-                                        "first_order_ltv_30d_local_currency" : "first_order_ltv_30d_local_currency",
-                                        "first_order_ltv_30d_global_currency" : "first_order_ltv_30d_global_currency",
-                                        "first_order_ltv_60d_local_currency" : "first_order_ltv_60d_local_currency",
-                                        "first_order_ltv_60d_global_currency" : "first_order_ltv_60d_global_currency",
-                                        "first_order_ltv_90d_local_currency" : "first_order_ltv_90d_local_currency",
-                                        "first_order_ltv_90d_global_currency" : "first_order_ltv_90d_global_currency",
-                                        "first_order_ltv_180d_local_currency" : "first_order_ltv_180d_local_currency",
                                         "first_order_ltv_180d_global_currency" : "first_order_ltv_180d_global_currency",
                                         "first_order_ltv_365d_local_currency" : "first_order_ltv_365d_local_currency",
                                         "first_order_ltv_365d_global_currency" : "first_order_ltv_365d_global_currency",

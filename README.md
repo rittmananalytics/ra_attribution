@@ -12,7 +12,7 @@ The attribution model within this package is a multi-cycle, multi-touch revenue 
 
 *   count and local/global currency value of first and repeat orders
 
-*   customer LTV value (30, 60, 90, 180 and 365 days spend since first order) on first order conversion
+*   customer LTV value (365 days spend since first order) on first order conversion
 
 
 ## Supported Data Sources and Warehouse Target

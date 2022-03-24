@@ -48,7 +48,7 @@ with
 
         -- organic search:
         when marketing_click_id is null
-            and rlike(referer_url_host,'.*(www\.google|bing\.com|duckduckgo\.com|startsiden\.no|search\.yahoo\.com|kvasir|ecosia).*','i')
+            and rlike(referer_url_host,'.*(www\.google|bing\.com|duckduckgo\.com|search\.yahoo\.com).*','i')
         then 'organic search'
 
         -- paid social:
