@@ -25,7 +25,21 @@ The attribution model within this package is a multi-cycle, multi-touch revenue 
 
 - Snowflake as the warehouse platform; whilst as much use as possible has been made of dbt\_utils cross-database SQL functions, this package has not yet been tested on BigQuery or other dbt-supported warehouse platforms.
 
+- Looker Dashboards and LookML Views and Model are provided as examples of visualizations and a BI tool semantic layer, intended to be either run  standalone or incorporated into an existing LookML project
+
 - Lightdash is supported out-of-the-box through metrics, dimensions, tables and joins definitions in the dbt package, and other BI tools e.g. Looker are compatible but require manual configuration
+
+### Looker Dashboards and LookML Views
+
+The package comes with example LookML views, a model containing two explores and two LookML dashboards intended as a starting point for your own particular analysis requirements.
+
+![](img/looker.png)
+
+LookML views come with sets of parameters that when used in combination allow the end-user to select measures for reporting using
+
+- choice of attribution model (first-click, last-click, even-click, first non-direct click etc)
+- LTV days since first order (default of 30, extendable to add other period e.g. 60 days, 90 days etc)
+- Currency displayed (local, global)
 
 ### Lightdash Metrics Layer
 
