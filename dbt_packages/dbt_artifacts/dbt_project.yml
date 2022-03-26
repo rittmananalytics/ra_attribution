@@ -1,0 +1,15 @@
+name: 'dbt_artifacts'
+version: '0.6.0'
+config-version: 2
+require-dbt-version: ">=0.20.0"
+profile: "dbt_artifacts"
+
+models:
+  dbt_artifacts:
+    # No schema override is defined here, but we recommend that you
+    # override the schema for specific projects.
+    +materialized: table
+    incremental:
+      +materialized: incremental
+    staging:
+      +materialized: view # The staging tables cannot be ephemeral

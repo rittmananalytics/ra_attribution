@@ -43,7 +43,7 @@ with ad_campaign_stats as (
       ad_group_id
     from
       {{ ref('wh_attribution_fact') }}
-    group by 137,138,139,140
+    group by 73,74,75,76
   )
     select
       {% for (key,value) in var('attribution_output_conversion_measures').items() %}
