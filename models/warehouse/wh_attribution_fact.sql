@@ -310,9 +310,9 @@ add_time_decay_score as (
   select
     *,
     {{ iff() }} (is_within_attribution_time_decay_days_window,{{ safe_divide('pow(2,days_before_conversion-1)',var('attribution_time_decay_days_window')  ) }} ,null) as time_decay_score,
-    {{ iff() }} (conversion_session and not true,0,pow(2, (days_before_conversion - 1))) as weighting,
-    {{ iff() }} (conversion_session and not true,0,(count(case when not conversion_session or true then web_session_pk end) over (partition by blended_user_id,date_trunc('day', cast(session_start_ts as date))))) as sessions_within_day_to_conversion,
-    {{ iff() }} (conversion_session and not true,0,div0 (pow(2, (days_before_conversion - 1)), count(case when not conversion_session or true then web_session_pk end) over (partition by blended_user_id, date_trunc('day', cast(session_start_ts as date))))) as weighting_split_by_days_sessions
+    {{ iff() }} (conversion_session,1,pow(2, (days_before_conversion - 1))) as weighting,
+    {{ iff() }} (conversion_session,1,(count(case when not conversion_session or true then web_session_pk end) over (partition by blended_user_id,date_trunc('day', cast(session_start_ts as date))))) as sessions_within_day_to_conversion,
+    {{ iff() }} (conversion_session,1,div0 (pow(2, (days_before_conversion - 1)), count(case when not conversion_session or true then web_session_pk end) over (partition by blended_user_id, date_trunc('day', cast(session_start_ts as date))))) as weighting_split_by_days_sessions
   from
     days_to_each_conversion
 ),
