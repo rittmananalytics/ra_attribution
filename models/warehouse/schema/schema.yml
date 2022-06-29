@@ -72,7 +72,7 @@ models:
             type: number
             hidden: yes
           metrics:
-            total_clicks:
+            total_total_clicks:
               type: sum
               label: "Total Clicks"
       - name: total_reported_clicks
@@ -82,7 +82,7 @@ models:
             type: number
             hidden: yes
           metrics:
-            total_reported_clicks:
+            total_total_reported_clicks:
               type: sum
               label: "Total Reported Clicks"
       - name: total_reported_impressions
@@ -92,7 +92,7 @@ models:
             type: number
             hidden: yes
           metrics:
-            total_reported_impressions:
+            total_total_reported_impressions:
               type: sum
               label: "Total Reported Impressions"
       - name: actual_vs_reported_clicks_pct
