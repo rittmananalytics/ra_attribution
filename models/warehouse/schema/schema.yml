@@ -68,7 +68,7 @@ models:
       - name: total_clicks
         meta:
           dimension:
-            label: "Total Clicks"
+            label: "Clicks"
             type: number
             hidden: yes
           metrics:
@@ -78,7 +78,7 @@ models:
       - name: total_reported_clicks
         meta:
           dimension:
-            label: "Total Reported Clicks"
+            label: "Reported Clicks"
             type: number
             hidden: yes
           metrics:
@@ -88,7 +88,7 @@ models:
       - name: total_reported_impressions
         meta:
           dimension:
-            label: "Total Reported Impressions"
+            label: "Reported Impressions"
             type: number
             hidden: yes
           metrics:
