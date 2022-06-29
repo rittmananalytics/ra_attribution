@@ -43,10 +43,7 @@ models:
       utils:
           materialized: table
 
-  dbt_artifacts:
-    +schema: ARTIFACTS
-    staging:
-      +schema: ARTIFACTS_STAGING
+
 
 # seeds (reference files, loaded into tables) module settings
 seeds:
@@ -199,11 +196,3 @@ vars:
 
   dbt_utils_dispatch_list: [spark_utils, fivetran_utils]
   fivetran_utils_dispatch_list: [spark_utils]
-
-  dbt_artifacts:
-    dbt_artifacts_database: RA_DATA_WAREHOUSE_DEV # optional, default is your target database
-    dbt_artifacts_schema: DBT_ARTIFACTS # optional, default is 'dbt_artifacts'
-    dbt_artifacts_table: ARTIFACTS # optional, default is 'artifacts'
-    dbt_artifacts_results_table: DBT_RUN_RESULTS # optional, default is 'dbt_run_results'
-    dbt_artifacts_result_nodes_table: DBT_RUN_RESULTS_NODES # optional, default is 'dbt_run_result_nodes'
-    dbt_artifacts_manifest_nodes_table: DBT_MANIFEST_NODES # optional, default is 'dbt_manifest_nodes'
