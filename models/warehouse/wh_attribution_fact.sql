@@ -50,7 +50,7 @@
     " %}
 
 {% set user_registration_condition = "
-    event_type='"~var('attribution_create_account_event_type')~
+    event_type='"~var('attribution_registration_event_type')~
     "' and event_id = first_registration_event_id
     " %}
 
@@ -66,7 +66,7 @@ events_filtered as
   from (
     select
       *,
-      first_value(case when event_type = '{{ var('attribution_create_account_event_type') }}' then event_id end ignore nulls) over ({{user_event_window_clause}}) as first_registration_event_id,
+      first_value(case when event_type = '{{ var('attribution_registration_event_type') }}' then event_id end ignore nulls) over ({{user_event_window_clause}}) as first_registration_event_id,
       first_value(case when {{order_condition}} then event_id end ignore nulls) over ({{user_event_window_clause}}) as first_order_event_id
     from
       {{ ref ('wh_web_events_fact') }})
@@ -105,7 +105,7 @@ events_filtered as
       case when {{repeat_order_condition}} then total_revenue_local_currency else 0 end as repeat_order_total_revenue_local_currency,
       case when {{repeat_order_condition}} then total_revenue_global_currency else 0 end as repeat_order_total_revenue_global_currency,
       e.local_currency,
-      case when event_type in ('{{ var('attribution_conversion_event_type') }}','{{ var('attribution_create_account_event_type') }}') then 1 else 0 end as count_conversions,
+      case when event_type in ('{{ var('attribution_conversion_event_type') }}','{{ var('attribution_registration_event_type') }}') then 1 else 0 end as count_conversions,
       case when {{first_order_condition}} then 1 else 0 end as count_first_order_conversions,
       case when {{repeat_order_condition}} then 1 else 0 end as count_repeat_order_conversions,
       case when event_type = '{{ var('attribution_conversion_event_type') }}' then 1 else 0 end as count_order_conversions,
