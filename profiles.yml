@@ -1,0 +1,14 @@
+ra_data_warehouse:
+  target: dev_bigquery
+  outputs:
+      dev_bigquery:
+          type: bigquery
+          method: service-account
+          keyfile: "{{ env_var('BIGQUERY_KEYFILE_PATH') }}"
+          project: "{{ env_var('BIGQUERY_PROJECT_ID') }}"
+          dataset: "{{ env_var('BIGQUERY_DATASET') }}"
+          location: europe-west2
+          threads: 24
+          timeout_seconds: 300
+          priority: interactive
+          retries: 1
