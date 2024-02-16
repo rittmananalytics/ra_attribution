@@ -1,4 +1,31 @@
+# vscode
+**/.vscode/*
 
-target/
-dbt_modules/
-logs/
+# Environments
+**/.env
+**/*venv*
+**/*poetry.lock
+
+# python
+dist
+logs
+__pycache__
+tmp*
+
+# dbt
+**/target/
+**/dbt_packages/
+**/logs/
+**/.user.yml
+**/package-lock.yml
+
+# dagster
+**/*.dagster
+
+# duckdb
+**/*.duckdb*
+
+# packages
+**/.DS_Store
+**/__pycache__/
+**/*.log
